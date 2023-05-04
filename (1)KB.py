@@ -2,7 +2,7 @@
 from pyswip import Prolog
 
 # definition of User Variables
-PATH_KB = './KB/kb.pl'
+PATH_KB = './KB/fatti.pl'
 
 # definition of the methods
 def create_KB(path):
@@ -23,7 +23,9 @@ def create_KB(path):
         'athlete(X) :- footballer(X)',
         'athlete(X) :- runner(X)',
         'good_life(X) :- athlete(X), non_smoker(X)',
-        'non_smoker(matteo)'
+        'non_smoker(matteo)',
+        'smoker(nicola)',
+        'falso :- smoker(Y), non_smoker(Y)'
     ])
 
     # closing the file
@@ -71,5 +73,8 @@ print(boolean_answer('runner(matteo)'))
 
 print('Ha matteo una vita sana?')
 print(boolean_answer('good_life(matteo)'))
+
+print('La KB ha una contraddizione?')
+print(boolean_answer('falso'))
 
 
