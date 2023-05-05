@@ -1,8 +1,8 @@
-footballer(matteo).
-runner(nicola).
-athlete(X) :- footballer(X).
-athlete(X) :- runner(X).
-good_life(X) :- athlete(X), non_smoker(X).
-non_smoker(matteo).
-smoker(nicola).
-falso :- smoker(Y), non_smoker(Y).
+student(st_neri_marco).
+student(st_azzurri_mattia).
+student(st_rossi_mario).
+student(st_bianchi_luigi).
+teacher(te_alti_francesca).
+teacher(te_bassi_nicola).
+teacher(te_piccoli_ginevra).
+teacher(te_grandi_massimiliano).

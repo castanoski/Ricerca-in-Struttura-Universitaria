@@ -2,7 +2,12 @@
 from pyswip import Prolog
 
 # definition of User Variables
-PATH_KB = './KB/fatti.pl'
+PATH_FACTS_KB = './KB/fatti.pl'
+PATH_RULES_KB = './KB/regole.pl'
+
+# definition of methods to perform queries to the Knowledge Base
+boolean_answer = lambda my_query: bool(list(pl.query(my_query)))
+list_answer = lambda my_query: list(pl.query(my_query))
 
 # definition of the methods
 def create_KB(path):
@@ -16,17 +21,48 @@ def create_KB(path):
     # defining the standard operation to write on file_prolog
     write_clauses = lambda clauses: write_clauses_on_file(clauses, file_prolog)
 
-    # starting the creation of the Knowledge Base
-    write_clauses([
-        'footballer(matteo)',
-        'runner(nicola)',
-        'athlete(X) :- footballer(X)',
-        'athlete(X) :- runner(X)',
-        'good_life(X) :- athlete(X), non_smoker(X)',
-        'non_smoker(matteo)',
-        'smoker(nicola)',
-        'falso :- smoker(Y), non_smoker(Y)'
-    ])
+    # adding facts for students
+    students = [
+        'neri_marco',
+        'azzurri_mattia',
+        'rossi_mario',
+        'bianchi_luigi'
+    ]
+
+    for student in students:
+        write_clauses([f'student(st_{student})'])
+
+    # adding facts for teachers
+    teachers = [
+        'alti_francesca',
+        'bassi_nicola',
+        'piccoli_ginevra',
+        'grandi_massimiliano'
+    ]
+
+    for teacher in teachers:
+        write_clauses([f'teacher(te_{teacher})'])
+
+    # adding facts for classes
+    days = [
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday'
+    ]
+
+    classes = [
+        'ICon',
+        'IUM',
+        'MRI',
+        'CC'
+    ]
+
+            #aggiungi casualmente due lezioni per classe in una aula X.
+
 
     # closing the file
     file_prolog.close()
@@ -42,39 +78,11 @@ def write_clauses_on_file(clauses, file):
 
 
 # start of the script
-create_KB(PATH_KB)
+create_KB(PATH_FACTS_KB)
 pl = Prolog()
 
-pl.consult(PATH_KB)
+pl.consult(PATH_RULES_KB)
+pl.consult(PATH_FACTS_KB)
 
-boolean_answer = lambda my_query: bool(list(pl.query(my_query)))
-list_answer = lambda my_query: list(pl.query(my_query))
-
-print('E\' nicola un atleta?')
-print(boolean_answer('athlete(nicola)'))
-
-print('E\' nicola un footballer?')
-print(boolean_answer('footballer(nicola)'))
-
-print('E\' nicola un runnner?')
-print(boolean_answer('runner(nicola)'))
-
-print('Ha nicola una vita sana?')
-print(boolean_answer('good_life(nicola)'))
-
-print('E\' matteo un atleta?')
-print(boolean_answer('athlete(matteo)'))
-
-print('E\' matteo un footballer?')
-print(boolean_answer('footballer(matteo)'))
-
-print('E\' matteo un runnner?')
-print(boolean_answer('runner(matteo)'))
-
-print('Ha matteo una vita sana?')
-print(boolean_answer('good_life(matteo)'))
-
-print('La KB ha una contraddizione?')
-print(boolean_answer('falso'))
 
 
