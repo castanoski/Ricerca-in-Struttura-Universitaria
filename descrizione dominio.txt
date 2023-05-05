@@ -1,0 +1,8 @@
+In un edificio di 5 piani (4+terra) ospita un dipartimento universitario.
+
+Si devono gestire i permessi di accesso all'ascensore e ai diversi uffici/aule presenti nell'edificio.
+
+Il sistema ragiona a partire da ciò che è noto a priori riguardante gli individui che possono essere Studenti o Professori, ai corsi che essi frequentano o insegnano, alla schedulazione delle lezioni settimanali che comprendono orario e luogo della lezione, ecc.
+
+Il sistema prevede il calcolo del percorso più breve nella piantina dell'edificio, prevedendo o meno l'utilizzo dell'ascensore a seconda dell'individuo che effettua la query.
+Inoltre esso può segnalare all'utente che il luogo non può essere raggiunto per la persona che lo sta richiedendo.
