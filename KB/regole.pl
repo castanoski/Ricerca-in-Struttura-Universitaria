@@ -43,10 +43,10 @@ is_time_included_in(Time, _, Time).
     % Regole per calcolare se il primo tempo viene prima del secondo
 is_before_time(get_time(Day, Hour1, _), get_time(Day, Hour2, _)) :-
     Hour1 < Hour2.
-is_before_time(get_time(Day, Hour, Minute1), get_time(Day, Hour, Minute2)) :-   
-    Minute1 < Minute2.                                                         
-% se il giorno è diverso non è before perchè
-% si intende before nello stesso giorno
+
+is_before_time(get_time(Day, Hour, Minute1), get_time(Day, Hour, Minute2)) :-   % se il giorno è diverso non è before perchè
+    Minute1 < Minute2.                                                          % si intende before nello stesso giorno
+
 
 % Regole per i vincoli di integrità
 
@@ -61,7 +61,7 @@ falso :-
     is_scheduled(Class2, Class_Room, Start_Time2, End_Time2),
     is_before_time(Start_Time2, End_Time1),
     is_before_time(End_Time1, End_Time2),
-    Class1 =\= Class2.
+    Class1 =\= Class2.                                              % controlla che effettivamente due lezioni con orario identico vadano in conflitto
 
     % Regola per controllare che una lezione non sia schedulata con due date non coerenti tra di loro
 falso :-
