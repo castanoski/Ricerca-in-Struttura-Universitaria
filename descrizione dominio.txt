@@ -6,3 +6,24 @@ Il sistema ragiona a partire da ciò che è noto a priori riguardante gli indivi
 
 Il sistema prevede il calcolo del percorso più breve nella piantina dell'edificio, prevedendo o meno l'utilizzo dell'ascensore a seconda dell'individuo che effettua la query.
 Inoltre esso può segnalare all'utente che il luogo non può essere raggiunto per la persona che lo sta richiedendo.
+Alcuni dei vincoli che andranno rispettati sono :
+lo studente deve necessariamente fare parte di un corso specifico se vuole entrare nell'aula dove si sta tenenedo la lezione,
+alcuni utenti possono entrare ovunque (personale di supporto)
+un docente può entrare in un aula se deve tenere quella lezione(in quell'intervallo di tempo
+ogni lezione ha una programmazione settimanale che indica dove e quando si svolgono le lezioni
+nella kb ci devono essere regole per confrontare i tempi e evitare conflitti
+ogni utente ha un solo ruolo non modificabile
+bisogna controllare che le schedulaioni abbiano orari validi 
+REMINDER
+
+ascensore tra piano terra e secondo e ascensore tra primo e quarto
+scale separate per far attraversare il piano
+AULE
+aula studio:possono entrare solo gli studenti
+aula lezione: studenti e prof se partecipano al corso
+bagni: tutti
+ufficio professore: professore dell'ufficio(associato),studenti che partecipano al suo corso se nell'orario di ricevimento
+orari di apertura dipartimento 8-18(controlli su orario lezioni)
+da chiedere: eventuali luci rotte/stanze non disponibili(bagni rotti) e quindi controlli aggiuntivi/ricalcolo percorso
+quante stanze pre piano?
+uffici tutti allo stesso piano?
