@@ -1,4 +1,7 @@
-% Regole per il ragionamento sull'accesso all'ascensore e alle aule
+
+%       --------------------------------------------------------------------------------------------------------------------       %
+%                               Regole per il ragionamento sui permessi di accesso ad ascensore e aule                             %
+%       --------------------------------------------------------------------------------------------------------------------       % 
 
 
     % Regola per il permesso dell'utilizzo dell'ascensore a professori
@@ -8,15 +11,25 @@ can_use_elevator(Person) :-
     % Regola per il permesso dell'utilizzo dell'ascensore a studenti
 
 
+    % Regola per il permesso dell'accesso all'ufficio da parte del docente proprietario e degli studenti del suo corso
+can_enter_room(Person, Room, Time) :-
+    is_available_room(Room),
+    is_office_room(Room),
+    office_owner(Person, Room).
+
+can_enter_room(Person, Room, Time) :-
+    is_available_room(Room),
+    is_office_room(Room),
+    follows_class(Person, Class),
+    teaches_class(Teacher, Class),
+    office_owner(Teacher, Room).
+
     % Regola per il permesso dell'accesso all'aula studio
 can_enter_room(Person, Room, Time) :-
     is_available_room(Room),
     is_study_room(Room),
     is_student(Person),
     is_legal_time(Time).
-
-    % Regola per il permesso dell'accesso all'ufficio
-
 
     % Regola per il permesso dell'accesso al bagno
 can_enter_room(_, Room, Time) :-
@@ -33,12 +46,10 @@ can_enter_room(Person, Class_Room, Time) :-
 
     % Regola per capire se uno studente prende parte al corso
 takes_part_in_class(Person, Class) :-
-    is_student(Person),
     follows_class(Person, Class).
 
     % Regola per capire se un docente prende parte al corso
 takes_part_in_class(Person, Class) :-
-    is_teacher(Person),
     teaches_class(Person, Class).
 
     % Regole per capire se una lezione si sta svolgendo nell_aula in un determinato tempo
@@ -66,7 +77,7 @@ is_legal_time(get_time(Day, Hour, Minute)) :-
     Hour >= 0,
     is_legal_day(Day).
 
-    % Regole per definire il giorno della settimana accettabile
+    % Fatti per definire il giorno della settimana accettabile
 is_legal_day(monday).
 is_legal_day(tuesday).
 is_legal_day(wednesday).
@@ -87,7 +98,10 @@ is_available_room(Room) :-
     \+there_is_a_problem_in(Room).
 
 
-% Regole per i vincoli di integrità
+
+%       --------------------------------------------------------------------------------------------------------------------       %
+%                                               Regole per i vincoli di integrità                                                  %
+%       --------------------------------------------------------------------------------------------------------------------       % 
 
     % Regola che vincola una persona a non poter essere ne docente ne studente
 falso :-
@@ -134,3 +148,17 @@ falso :-
 falso :-
     is_study_room(Room),
     is_office_room(Room).
+
+    % Regole per controllare che nessuno studente insegni e nessun professore segua dei corsi
+falso :-
+    teaches_class(Student,_),
+    is_student(Student).
+
+falso :-
+    follows_class(Teacher,_),
+    is_teacher(Teacher).
+
+    % Regola per garantire che solo i professori possano avere un ufficio
+falso :-
+    office_owner(Non_Teacher,_),
+    \+is_teacher(Non_Teacher).              % E' corretto in questo modo? Controlla quantificazione
