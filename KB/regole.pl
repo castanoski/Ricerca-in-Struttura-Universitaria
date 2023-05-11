@@ -12,12 +12,12 @@ can_use_elevator(Person) :-
 
 
     % Regola per il permesso dell'accesso all'ufficio da parte del docente proprietario e degli studenti del suo corso
-can_enter_room(Person, Room, Time) :-
+can_enter_room(Person, Room, _) :-
     is_available_room(Room),
     is_office_room(Room),
     office_owner(Person, Room).
 
-can_enter_room(Person, Room, Time) :-
+can_enter_room(Person, Room, _) :-
     is_available_room(Room),
     is_office_room(Room),
     follows_class(Person, Class),
@@ -71,9 +71,9 @@ is_time_included_in(Time, _, Time) :-
 
     % Regole per valutare se un tempo ha un formato accettabile
 is_legal_time(get_time(Day, Hour, Minute)) :-
-    Minute <= 59,
+    Minute =< 59,
     Minute >= 0,
-    Hour <= 23,
+    Hour =< 23,
     Hour >= 0,
     is_legal_day(Day).
 
