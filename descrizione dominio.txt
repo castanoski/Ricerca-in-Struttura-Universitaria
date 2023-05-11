@@ -27,3 +27,16 @@ orari di apertura dipartimento 8-18(controlli su orario lezioni)
 da chiedere: eventuali luci rotte/stanze non disponibili(bagni rotti) e quindi controlli aggiuntivi/ricalcolo percorso
 quante stanze pre piano?
 uffici tutti allo stesso piano?
+
+
+COSE DA FARE NELLO SCRIPT:
+
+Inserire studenti.
+Inserire docenti.
+Inserire bagni.
+Inserire aule studio.
+Inserire uffici.
+Inserire aule lezione.
+Inserire orari lezioni.
+Inserire partecipazione studenti alle lezioni.
+Inserire ...
