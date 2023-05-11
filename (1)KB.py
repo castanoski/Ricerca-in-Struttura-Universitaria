@@ -1,7 +1,7 @@
 # imports
 from pyswip import Prolog
 
-# definition of User Variables
+# definizione delle variabili utente
 PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 
@@ -77,7 +77,10 @@ def write_clauses_on_file(clauses, file):
     file.writelines('.\n'.join(clauses) + '.\n')
 
 
-# start of the script
+#       --------------------------------------------------------------------------------------------------------------------       #
+#                                                   Inizio dello Script                                                            #
+#       --------------------------------------------------------------------------------------------------------------------       # 
+
 create_KB(PATH_FACTS_KB)
 pl = Prolog()
 
