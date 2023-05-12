@@ -30,7 +30,7 @@ def create_KB(path):
     ]
 
     for student in students:
-        write_clauses([f'student(st_{student})'])
+        write_clauses([f'is_student(st_{student})'])
 
     # adding facts for teachers
     teachers = [
@@ -41,7 +41,7 @@ def create_KB(path):
     ]
 
     for teacher in teachers:
-        write_clauses([f'teacher(te_{teacher})'])
+        write_clauses([f'is_teacher(te_{teacher})'])
 
     # adding facts for classes
     days = [

@@ -1,8 +1,8 @@
-student(st_neri_marco).
-student(st_azzurri_mattia).
-student(st_rossi_mario).
-student(st_bianchi_luigi).
-teacher(te_alti_francesca).
-teacher(te_bassi_nicola).
-teacher(te_piccoli_ginevra).
-teacher(te_grandi_massimiliano).
+is_student(st_neri_marco).
+is_student(st_azzurri_mattia).
+is_student(st_rossi_mario).
+is_student(st_bianchi_luigi).
+is_teacher(te_alti_francesca).
+is_teacher(te_bassi_nicola).
+is_teacher(te_piccoli_ginevra).
+is_teacher(te_grandi_massimiliano).

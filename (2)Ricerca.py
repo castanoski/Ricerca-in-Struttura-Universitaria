@@ -7,6 +7,10 @@ from pyswip import Prolog
 PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 
+# definizione di costanti utili per la stampa
+PROMPT_BEGIN = "\n"
+PROMPT_END = ":\n\n  > "
+
 # classe che traduce i risultati delle query alla KB in un problema di ricerca
 class Problema_Ricerca_Edificio():
     
@@ -26,7 +30,28 @@ class Problema_Ricerca_Edificio():
         print(bool(list(self.prolog.query("falso"))))
     
 
+def get_input(message : str):
+    '''
+    Metodo per la richiesta di input all'utente.
+    Restituisce l'input dell'utente.
+    '''
+    return input(f"{PROMPT_BEGIN}{message}{PROMPT_END}")
 
+
+def executeQuery():
+    '''
+    Metodo per l'esecuzione di una query.
+    Restituisce True se l'utente non ha immesso "/quit", Falso se l'utente vuole uscire.
+    '''
+    
+    person = get_input("Identificati per effettuare una query oppure scrivi '/quit' per uscire dallo script")
+
+    if(person == "/quit"): 
+        return False
+    
+    # do something 
+
+    return True
 
 
 #       --------------------------------------------------------------------------------------------------------------------       #
@@ -34,41 +59,11 @@ class Problema_Ricerca_Edificio():
 #       --------------------------------------------------------------------------------------------------------------------       # 
 
 
-# defining the problem
-building_problem = Search_problem_from_explicit_graph(
-    {   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J'},
-    [   Arc('A', 'B', 2),
-        Arc('A', 'C', 3),
-        Arc('A', 'D', 4),
-        Arc('B', 'E', 2),
-        Arc('B', 'F', 3),
-        Arc('C', 'J', 7),
-        Arc('D', 'H', 4),
-        Arc('F', 'D', 2),
-        Arc('H', 'G', 3),
-        Arc('J', 'G', 4)],
-    start = 'A',
-    goals = {'G'},
-    hmap = {
-        'A': 7,
-        'B': 5,
-        'C': 9,
-        'D': 6,
-        'E': 3,
-        'F': 5,
-        'G': 0,
-        'H': 3,
-        'J': 4,
-    }
-)
+# main loop per l'esecuzione delle query utente
+keep_going = True
+while(keep_going):
+    keep_going = executeQuery()
 
-
-# defining the solver 
-A_Star = AStarSearcher(building_problem)
-
-# solve
-for i in range (0,8):
-    solution= A_Star.search()
-    print(f"Path = {solution}\nCost = {solution.cost}")
+print("bye.")
 
 
