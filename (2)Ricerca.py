@@ -32,7 +32,7 @@ class Knowledge_Base:
             self.prolog.consult(file)
 
         # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
-        print(f"La KB è inconsistente? ", self.get_boolean_query_result("falso"))
+        #print(f"La KB è inconsistente? ", self.get_boolean_query_result("falso"))
 
 
     def get_boolean_query_result(self, my_query : str) -> bool:
@@ -49,7 +49,7 @@ class Knowledge_Base:
 
 
 
-def get_input(message : str):
+def prompt(message : str):
     '''
     Metodo per la richiesta di input all'utente.
     Restituisce l'input dell'utente.
@@ -64,7 +64,7 @@ def executeSearch(kb : Knowledge_Base):
     Restituisce True se l'utente non ha immesso "/quit", Falso se l'utente vuole uscire.
     '''
     
-    person = get_input("Identificati per effettuare una query oppure scrivi '/quit' per uscire dallo script")
+    person = prompt("Identificati per effettuare una query oppure scrivi '/quit' per uscire dallo script")
 
     if(person == "/quit"): 
         return False
