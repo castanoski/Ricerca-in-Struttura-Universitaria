@@ -1,7 +1,7 @@
 # imports
 from pyswip import Prolog
 
-# definition of User Variables
+# definizione delle variabili utente
 PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 
@@ -30,7 +30,7 @@ def create_KB(path):
     ]
 
     for student in students:
-        write_clauses([f'student(st_{student})'])
+        write_clauses([f'is_student(st_{student})'])
 
     # adding facts for teachers
     teachers = [
@@ -41,7 +41,7 @@ def create_KB(path):
     ]
 
     for teacher in teachers:
-        write_clauses([f'teacher(te_{teacher})'])
+        write_clauses([f'is_teacher(te_{teacher})'])
 
     # adding facts for classes
     days = [
@@ -77,7 +77,10 @@ def write_clauses_on_file(clauses, file):
     file.writelines('.\n'.join(clauses) + '.\n')
 
 
-# start of the script
+#       --------------------------------------------------------------------------------------------------------------------       #
+#                                                   Inizio dello Script                                                            #
+#       --------------------------------------------------------------------------------------------------------------------       # 
+
 create_KB(PATH_FACTS_KB)
 pl = Prolog()
 
