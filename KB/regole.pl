@@ -113,11 +113,10 @@ is_room(Room) :-
     % Regole per determinare se si tratta di una persona
 is_person(Person) :-
     is_student(Person).
+
 is_person(Person) :-
     is_teacher(Person).
 
-    
-    
 
 
 %       --------------------------------------------------------------------------------------------------------------------       %
