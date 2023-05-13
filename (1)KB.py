@@ -110,7 +110,7 @@ def create_KB(path):
 
     #adding facts for bath_rooms
     for bathroom in bath_rooms:
-        clauses_list.append(f'is_bathroom({bathroom})')
+        clauses_list.append(f'is_bath_room({bathroom})')
 
     #adding facts for study_rooms
     for study_room in study_rooms:

@@ -6,10 +6,10 @@ follows_class(student_003,cc).
 follows_class(student_003,mri).
 follows_class(student_004,icon).
 follows_class(student_004,mri).
-is_bathroom(bathroom_101).
-is_bathroom(bathroom_102).
-is_bathroom(bathroom_103).
-is_bathroom(bathroom_104).
+is_bath_room(bathroom_101).
+is_bath_room(bathroom_102).
+is_bath_room(bathroom_103).
+is_bath_room(bathroom_104).
 is_lesson_room(lesson_room_011).
 is_lesson_room(lesson_room_012).
 is_lesson_room(lesson_room_013).
