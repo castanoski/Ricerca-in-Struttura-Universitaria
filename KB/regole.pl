@@ -97,6 +97,27 @@ is_before_time(get_time(Day, Hour, Minute1), get_time(Day, Hour, Minute2)) :-   
 is_available_room(Room) :-
     \+there_is_a_problem_in(Room).
 
+    % Regole per determinare se si tratta di una stanza
+is_room(Room) :-
+    is_bath_room(Room).
+
+is_room(Room) :-
+    is_lesson_room(Room).
+
+is_room(Room) :-
+    is_study_room(Room).
+
+is_room(Room) :-
+    is_office_room(Room).
+
+    % Regole per determinare se si tratta di una persona
+is_person(Person) :-
+    is_student(Person).
+is_person(Person) :-
+    is_teacher(Person).
+
+    
+    
 
 
 %       --------------------------------------------------------------------------------------------------------------------       %
