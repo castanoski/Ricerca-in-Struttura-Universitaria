@@ -17,10 +17,10 @@ def create_KB(path):
 
     # creating lists of individuals
     offices = [
-        'office_101',
-        'office_102',
-        'office_202',
-        'office_201'
+        'office_room_101',
+        'office_room_102',
+        'office_room_202',
+        'office_room_201'
     ]
 
     lesson_rooms = [
@@ -31,10 +31,10 @@ def create_KB(path):
     ]
 
     bath_rooms = [
-        'bathroom_101',
-        'bathroom_102',
-        'bathroom_103',
-        'bathroom_104',
+        'bath_room_101',
+        'bath_room_102',
+        'bath_room_103',
+        'bath_room_104',
     ]
 
     study_rooms = [
@@ -52,10 +52,10 @@ def create_KB(path):
     ]
 
     teachers = [                            # teacher = [nome_prof , lista_corsi, lista_index_uffici]
-        ['teacher_001',['reti'],['office_102']],
-        ['teacher_002',['mri'],['office_202']],
-        ['teacher_003',['cc'],['office_101']],
-        ['teacher_004',['icon'],['office_201']]
+        ['teacher_001',['reti'],['office_room_102']],
+        ['teacher_002',['mri'],['office_room_202']],
+        ['teacher_003',['cc'],['office_room_101']],
+        ['teacher_004',['icon'],['office_room_201']]
     ]
 
     classes = [                             # cl = [nome_corso, lista_schedulazioni] dove 
@@ -88,16 +88,16 @@ def create_KB(path):
 
     #adding definitions for places
     places=[
-        ["bathroom_101",0,0,0,[
+        ["bath_room_101",0,0,0,[
             "lesson_room_014",
-             "office_101",
+             "office_room_101",
         ]],
         ["lesson_room_014",1,1,0,[
-            "bathroom_101",
+            "bath_room_101",
              "lesson_room_012",
         ]],
-        ["office_101",2,1,0,[
-            "bathroom_101",
+        ["office_room_101",2,1,0,[
+            "bath_room_101",
              "lesson_room_013",
         ]]
     ]

@@ -144,6 +144,11 @@ falso :-
 falso :-
     is_scheduled(_,_,Time,Time).
 
+    % Regola per controllare che una lezione non sia schedulata in una stanza che non è aula di lezione
+falso :-
+    is_scheduled(_, Room, _, _),
+    \+is_lesson_room(Room).
+
     % Regole per controllare la presenza di aule che siano di due tipi diversi 
 falso :-
     is_bath_room(Room),

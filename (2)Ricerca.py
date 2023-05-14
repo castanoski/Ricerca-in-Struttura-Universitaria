@@ -72,6 +72,7 @@ class My_Problem(Search_problem_from_explicit_graph):
 
     def __init__(self, kb : Knowledge_Base, start_node_name : str, goal_nodes_names : list, user_name : str):
         nodes = set()
+        arcs = []
         goal_nodes = set()
         heuristics = {}
 
@@ -90,7 +91,9 @@ class My_Problem(Search_problem_from_explicit_graph):
             if(node.get_name() in goal_nodes_names):
                 goal_nodes.add(node)
         
-        # calcolo il valore euristico di ogni nodo 
+        # calcolo il valore euristico di ogni nodo, calcolandolo per ogni nodo e ogni nodo goal e scegliendo per ogni nodo il valore minore calcolato
+
+        # per ogni nodo, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista
 
 
         # richiamo al costruttore di default per costruire il problema
