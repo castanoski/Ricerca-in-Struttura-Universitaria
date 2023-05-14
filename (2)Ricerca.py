@@ -3,6 +3,7 @@ from libsRicerca.searchGeneric import AStarSearcher
 from libsRicerca.searchProblem import Arc, Search_problem, Search_problem_from_explicit_graph
 from pyswip import Prolog
 
+
 # definizione delle variabili utente
 PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
@@ -47,6 +48,40 @@ class Knowledge_Base:
         '''
         return list(self.prolog.query(my_query))
 
+# implementazione classe Nodo
+class Nodo:
+    def __init__(self,nomenodo:str,kb:Knowledge_Base) -> None:
+        self.nomenodo = nomenodo
+        #self.coord_x=kb.get_list_query_result("query")
+        #self.coord_y=kb.get_list_query_result("query")
+        #self.piano=kb.get_list_query_result("query")
+        #self.nodi_adiacenti=kb.get_list_query_result("query")
+    def calcola_euristica(self,nodo)->float:
+        pass
+    
+
+#implementazione classe problema
+class Problema(Search_problem_from_explicit_graph):
+    def __init__(self,kb:Knowledge_Base,start_node_name:str,nodi_obiettivo_name:list,nome_utente:str):
+        nodi=[]
+        for x in kb.get_list_query_result("is_room(X)"):
+            nodo = Nodo(x["X"],kb)
+            nodi.append(nodo)
+            #controlla che sia nei nodi obiettivo
+            if (start_node_name==x["X"]):
+                start_node=nodo
+
+        
+
+
+
+
+
+        #super.__init__(self,nodes=nodi,arcs=archi,start=start_node,goals=nodi_obiettivo,hmap=euristiche)
+
+
+
+
 
 
 def prompt(message : str):
@@ -61,7 +96,29 @@ def prompt(message : str):
 
 
 def executeSearchWithStartRoom(kb: Knowledge_Base, person : str, start_room : str) -> bool:
-    print("Implementa esecuzione della query.")
+    query = prompt(f"Immetti il codice della stanza dove vuoi arrivare, oppure /bagno per il bagno più vicino, oppure /aulastudio per l'aula studio più vicina, infine /back se vuoi cambiare stanza di parttenza")
+    
+    # se l'utente vuole cambiare stanza allora ritorna al ciclo iniziale con una nuova identificazione
+    if(query == "/back"): 
+        print(f"{PROMPT_BEGIN}cambiando stanza di partenza...")
+        return False
+    
+    if(query == "/bagno"): 
+        pass
+    elif(query ==  "/aulastudio"):
+        pass
+    elif(not kb.get_boolean_query_result(f"is_room({query})")):
+        print(f"{PROMPT_BEGIN}Il codice stanza inserito non è corretto.")
+        return True
+    else:
+        pass
+
+    
+    
+    # se l'utente inserisce un codice stanza che non è valido, allora inizierà un nuovo ciclo per acquisire la stanza
+    if(not kb.get_boolean_query_result(f"is_room({start_room})")):
+        print(f"{PROMPT_BEGIN}Il codice stanza inserito non è corretto.")
+        return True
     return False
 
 
@@ -127,6 +184,7 @@ def executeSearch(kb : Knowledge_Base) -> bool:
 
 # main loop per l'esecuzione delle query utente
 knowledge_base = Knowledge_Base(FILES_LIST)
+p = Problema(knowledge_base,"",[],"")
 
 keep_going = True
 while(keep_going):

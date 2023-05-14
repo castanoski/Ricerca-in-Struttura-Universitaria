@@ -1,3 +1,6 @@
+floor(bathroom_101,0).
+floor(lesson_room_014,0).
+floor(office_101,0).
 follows_class(student_001,icon).
 follows_class(student_001,reti).
 follows_class(student_002,mri).
@@ -46,6 +49,9 @@ office_owner(teacher_001,office_102).
 office_owner(teacher_002,office_202).
 office_owner(teacher_003,office_101).
 office_owner(teacher_004,office_201).
+position(bathroom_101,0,0).
+position(lesson_room_014,1,1).
+position(office_101,2,1).
 teaches_class(teacher_001,reti).
 teaches_class(teacher_002,mri).
 teaches_class(teacher_003,cc).

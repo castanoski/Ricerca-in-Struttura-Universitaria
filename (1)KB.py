@@ -85,6 +85,25 @@ def create_KB(path):
         ],
     ]
 
+
+    #adding definitions for places
+    places=[
+        ["bathroom_101",0,0,0,[
+            "lesson_room_014",
+             "office_101",
+        ]],
+        ["lesson_room_014",1,1,0,[
+            "bathroom_101",
+             "lesson_room_012",
+        ]],
+        ["office_101",2,1,0,[
+            "bathroom_101",
+             "lesson_room_013",
+        ]]
+    ]
+
+
+
     # opening the file 
     file_prolog = open(path, "w")
 
@@ -128,6 +147,11 @@ def create_KB(path):
     for cl in classes:
         for schedule in cl[1]:
             clauses_list.append(f'is_scheduled({cl[0]},{schedule[0]},get_time({schedule[1]},{schedule[2]},{schedule[3]}),get_time({schedule[1]},{schedule[4]},{schedule[5]}))')
+
+    #adding facts for places
+    for place in places:
+        clauses_list.append(f'position({place[0]},{place[1]},{place[2]})')
+        clauses_list.append(f'floor({place[0]},{place[3]})')
 
     # sorting the list
     clauses_list.sort()
