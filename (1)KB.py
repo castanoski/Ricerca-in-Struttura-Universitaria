@@ -15,118 +15,125 @@ def create_KB(path):
     It creates the Knowledge Base saving it to the given path.
     '''
 
+    # creating lists of individuals
+    offices = [
+        'office_101',
+        'office_102',
+        'office_202',
+        'office_201'
+    ]
+
+    lesson_rooms = [
+        'lesson_room_011',
+        'lesson_room_012',
+        'lesson_room_013',
+        'lesson_room_014'
+    ]
+
+    bath_rooms = [
+        'bathroom_101',
+        'bathroom_102',
+        'bathroom_103',
+        'bathroom_104',
+    ]
+
+    study_rooms = [
+        'study_room_101',
+        'study_room_102',
+        'study_room_103',
+        'study_room_104',
+    ]
+
+    students = [                            # student = [nome_studente , lista_index_corsi]
+        ['student_001',['icon','reti']],
+        ['student_002',['reti','mri']],
+        ['student_003',['cc','mri']],
+        ['student_004',['icon','mri']]
+    ]
+
+    teachers = [                            # teacher = [nome_prof , lista_corsi, lista_index_uffici]
+        ['teacher_001',['reti'],['office_102']],
+        ['teacher_002',['mri'],['office_202']],
+        ['teacher_003',['cc'],['office_101']],
+        ['teacher_004',['icon'],['office_201']]
+    ]
+
+    classes = [                             # cl = [nome_corso, lista_schedulazioni] dove 
+        ['icon',[                           # lista_schedulazioni = [index_aula, giorno, ora_inizio, minuti_inizio, ora_fine, minuti_fine]
+            ['lesson_room_012','monday',8,30,10,30],
+            ['lesson_room_012','friday',10,30,13,30],
+            ['lesson_room_012','wednesday',9,00,11,00]
+            ]
+        ],
+        ['mri',[
+            ["lesson_room_011",'tuesday',10,30,12,30],
+            ["lesson_room_011",'friday',11,30,13,30],
+            ["lesson_room_011",'wednesday',15,00,17,00]
+            ]
+        ],
+        ['cc',[
+            ["lesson_room_013",'monday',10,30,12,00],
+            ["lesson_room_013",'friday',10,45,12,45],
+            ["lesson_room_013",'thursday',8,00,11,00]
+            ]
+        ],
+        ['reti',[
+            ["lesson_room_014",'monday',11,30,14,30],
+            ["lesson_room_014",'friday',10,30,13,30],
+            ["lesson_room_014",'tuesday',13,00,16,00]
+            ]
+        ],
+    ]
+
     # opening the file 
     file_prolog = open(path, "w")
 
     # defining the standard operation to write on file_prolog
     write_clauses = lambda clauses: write_clauses_on_file(clauses, file_prolog)
 
-    # adding facts for students
-    students = [
-        ['neri_marco',['icon','reti']],
-        ['azzurri_mattia',['reti','mri']],
-        ['rossi_mario',['cc','mri']],
-        ['bianchi_luigi',['icon','mri']]
-    ]
-    
+    # creating a list of clauses to write
+    clauses_list = []
+
+    # adding facts for students 
     for student in students:
-        write_clauses([f'is_student({student[0]})'])
+        clauses_list.append(f'is_student({student[0]})')
         for corso in student[1]:
-            write_clauses([f'follows_class({student[0]},{corso})'])
+            clauses_list.append(f'follows_class({student[0]},{corso})')
 
-    #offices
-    offices = [
-        'o101',
-        'o102',
-        'o202',
-        'o201']
+    # adding facts for offices
     for office in offices:
-        write_clauses([f'is_office_room({office})'])
-
-
-    # adding facts for teachers
-    teachers = [
-        ['paolo_rossi',['reti'],[1]],
-        ['fabrizio_frizzi',['mri'],[2]],
-        ['mauro_cioce',['cc'],[0]],
-        ['massimilino_cavalcanti',['icon'],[3]]
-    ]
-
-    for teacher in teachers:
-        write_clauses([f'is_teacher({teacher[0]})'])
-        for corso in teacher[1]:
-            write_clauses([f'teaches_class({teacher[0]},{corso})'])
-        for office in teacher[2]:
-            write_clauses([f'office_owner({teacher[0]},{offices[office]})'])
-
-    # adding facts for lesson_rooms
+        clauses_list.append(f'is_office_room({office})')
     
-    lesson_rooms = [
-        'a011',
-        'a012',
-        'a013',
-        'a014']
-
+    # adding facts for lesson_rooms
     for lesson_room in lesson_rooms:
-        write_clauses([f'is_lesson_room({lesson_room})'])
-
+        clauses_list.append(f'is_lesson_room({lesson_room})')
 
     #adding facts for bath_rooms
-    bath_rooms = [
-        'b101',
-        'b102',
-        'b103',
-        'b104',]
-    
     for bathroom in bath_rooms:
-        write_clauses([f'is_bathroom({bathroom})'])
+        clauses_list.append(f'is_bath_room({bathroom})')
 
     #adding facts for study_rooms
-    study_rooms = [
-        's101',
-        's102',
-        's103',
-        's104',]
-    
     for study_room in study_rooms:
-        write_clauses([f'is_study_room({study_room})'])
+        clauses_list.append(f'is_study_room({study_room})')
 
+    # adding facts for teachers 
+    for teacher in teachers:
+        clauses_list.append(f'is_teacher({teacher[0]})')
+        for corso in teacher[1]:
+            clauses_list.append(f'teaches_class({teacher[0]},{corso})')
+        for office in teacher[2]:
+            clauses_list.append(f'office_owner({teacher[0]},{office})')
 
-    #adding facts for classes
-    classes = [
-        ['icon',[
-            [1,'monday',8,30,10,30],
-            [1,'friday',10,30,13,30],
-            [1,'wednesday',9,00,11,00]
-            ]],
-             ['mri',[
-            [0,'tuesday',10,30,12,30],
-            [0,'friday',11,30,13,30],
-            [0,'wednesday',15,00,17,00]
-            ]],
-             ['cc',[
-            [2,'monday',10,30,12,00],
-            [2,'friday',10,45,12,45],
-            [2,'thursday',8,00,11,00]
-            ]],
-             ['reti',[
-            [3,'monday',11,30,14,30],
-            [3,'friday',10,30,13,30],
-            [3,'tuesday',13,00,16,00]
-            ]],
-        ]
+    #adding facts for classes 
     for cl in classes:
         for schedule in cl[1]:
-            write_clauses([f'is_scheduled({cl[0]},{lesson_rooms[schedule[0]]},get_time({schedule[1]},{schedule[2]},{schedule[3]}),get_time({schedule[1]},{schedule[4]},{schedule[5]}))'])
+            clauses_list.append(f'is_scheduled({cl[0]},{schedule[0]},get_time({schedule[1]},{schedule[2]},{schedule[3]}),get_time({schedule[1]},{schedule[4]},{schedule[5]}))')
 
+    # sorting the list
+    clauses_list.sort()
 
-
-    
-
-    
-
-           
-
+    # writing clauses on file
+    write_clauses(clauses_list)
 
     # closing the file
     file_prolog.close()
