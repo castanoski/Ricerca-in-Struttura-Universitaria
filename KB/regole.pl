@@ -55,18 +55,12 @@ takes_part_in_class(Person, Class) :-
     % Regole per capire se una lezione si sta svolgendo nell_aula in un determinato tempo
 is_taking_place(Class, Class_Room, Time) :-
     is_scheduled(Class, Class_Room, Start_Time, End_Time),
-    is_time_included_in(Time, Start_Time, End_Time).    % non serve che sia legale perche incluso in is_time_included_ina
+    is_time_included_in(Time, Start_Time, End_Time).    % non serve che sia legale perche incluso in is_time_included_in
 
     % Regole per capire se un certo momento è incluso tra due estremi (non strettamente incluso)
 is_time_included_in(Time, Start_Time, End_Time) :-
     is_before_time(Time, End_Time),
     is_before_time(Start_Time, Time),
-    is_legal_time(Time).
-
-is_time_included_in(Time, Time, _) :-
-    is_legal_time(Time).
-
-is_time_included_in(Time, _, Time) :-
     is_legal_time(Time).
 
     % Regole per valutare se un tempo ha un formato accettabile
@@ -91,7 +85,7 @@ is_before_time(get_time(Day, Hour1, _), get_time(Day, Hour2, _)) :-
     Hour1 < Hour2.
 
 is_before_time(get_time(Day, Hour, Minute1), get_time(Day, Hour, Minute2)) :-   % se il giorno è diverso non è before perchè
-    Minute1 < Minute2.                                                          % si intende before nello stesso giorno
+    Minute1 =< Minute2.                                                          % si intende before nello stesso giorno
 
     % Regole per capire se una stanza è disponibile o meno
 is_available_room(Room) :-
@@ -134,7 +128,8 @@ falso :-
     is_scheduled(Class2, Class_Room, Start_Time2, End_Time2),
     is_before_time(Start_Time2, End_Time1),
     is_before_time(End_Time1, End_Time2),
-    Class1 =\= Class2.                                              % controlla che effettivamente due lezioni con orario identico vadano in conflitto
+    Start_Time2 \= End_Time1,
+    Class1 \= Class2.                                              
 
     % Regole per controllare che una lezione non sia schedulata con due date non coerenti tra di loro
 falso :-
@@ -187,3 +182,27 @@ falso :-
 falso :-
     office_owner(Non_Teacher,_),
     \+is_teacher(Non_Teacher).              % E' corretto in questo modo? Controlla quantificazione
+
+    % Regole per garantire che nessun posto abbia più coordinate
+falso :-
+    position(Place, X1, _),
+    position(Place, X2, _),
+    X1 \= X2.
+
+falso :-
+    position(Place, _, Y1),
+    position(Place, _, Y2),
+    Y1 \= Y2.
+
+falso :-
+    floor(Place, Floor1),
+    floor(Place, Floor2),
+    Floor1 \= Floor2.
+
+    % Regole per garantire che nessuna coppia di posti abbia le stesse coordinate
+falso :-
+    position(Place1, X, Y),
+    position(Place2, X, Y),
+    floor(Place1, Floor),
+    floor(Place2, Floor),
+    Place1 \= Place2.
