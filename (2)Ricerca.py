@@ -1,7 +1,8 @@
 # imports
-from libsRicerca.searchGeneric import AStarSearcher
+from libsRicerca.searchGeneric import Searcher, AStarSearcher
 from libsRicerca.searchProblem import Arc, Search_problem, Search_problem_from_explicit_graph
-from pyswip import Prolog
+from Knowledge_Base import Knowledge_Base
+import math
 
 
 # definizione delle variabili utente
@@ -19,52 +20,51 @@ PROMPT_END = ":\n\n  > "
 class Problema_Ricerca_Edificio():
     pass
 
-        
-    
-# classe per la manipolazione della Knowledge Base
-class Knowledge_Base:
-
-    def __init__(self, files_prolog) -> None:
-        # creazione della base di conoscenza
-        self.prolog = Prolog()
-
-        # avvaloramento della base di conoscenza con le regole dei files
-        for file in files_prolog:
-            self.prolog.consult(file)
-
-        # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
-        print(f"La KB caricata è consistente? ", not self.get_boolean_query_result("falso"))
-
-
-    def get_boolean_query_result(self, my_query : str) -> bool:
-        '''
-        Metodo per restituire il risultato di una query alla Knowòedge Base.
-        '''
-        return bool(list(self.prolog.query(my_query)))
-
-    def get_list_query_result(self, my_query : str) -> list:
-        '''
-        Metodo per restituire il risultato di una query alla Knowòedge Base.
-        '''
-        return list(self.prolog.query(my_query))
-
-
 
 # classe per la rappresentazione di un nodo del grafo, rappresentato dal suo nome, le coordinate spaziali e una lista dei nomi dei nodi adiacenti
 class My_Node:
 
     def __init__(self, node_name : str, kb : Knowledge_Base) -> None:
+        # query per trovare le coordinate X,Y del nodo
+        query_result = kb.get_unique_query_result(f"position({node_name}, X, Y)")
+        
+        # inizializzazione del nome, delle coordinate, del piano
         self.node_name = node_name
-        #self.coord_x = kb.get_list_query_result("query")
-        #self.coord_y = kb.get_list_query_result("query")
-        #self.floor = kb.get_list_query_result("query")
-        #self.neighbors = kb.get_list_query_result("query")
+        self.coord_x = query_result["X"]
+        self.coord_y = query_result["Y"]
+        self.floor = kb.get_unique_query_result(f"floor({node_name}, Floor)")["Floor"]
+
+        # inizializzazione dei vicini
+        self.neighbors_names = []
+
+        for neighbor in kb.get_list_query_result(f"direct_arc({node_name}, Neighbor, Cost)"):
+            self.neighbors_names.append(neighbor["Neighbor"])
+        
+
 
     def calculate_heuristic(self, node) -> float:
         pass
 
+
+    """ #forse non serve, lascialo
+
+    def calculate_distance(self, nodo, rounding=2) -> float:
+        # calcolo della distanza euclidea
+        if(self.floor == nodo.floor):
+            distance = math.sqrt(((self.coord_x-nodo.coord_x)**2) + ((self.coord_y-nodo.coord_y)**2))   
+        else:
+            # piani diversi, distanza tra ascensori, scale, ecc
+            pass
+    
+        # arrotondo alle prime due cifre decimali
+        return round(distance, rounding)
+    """
+
     def get_name(self) -> str:
         return self.node_name
+    
+    def get_neighbors_names(self) -> list:
+        return self.neighbors_names
     
 
 # classe per la costruzione del problema di ricerca da risolvere
@@ -72,32 +72,39 @@ class My_Problem(Search_problem_from_explicit_graph):
 
     def __init__(self, kb : Knowledge_Base, start_node_name : str, goal_nodes_names : list, user_name : str):
         nodes = set()
+        nodes_names = set()
         arcs = []
         goal_nodes = set()
         heuristics = {}
 
         # per ogni stanza creo il nodo sfruttando le info della Knowledge Base
-        for node_name in kb.get_list_query_result("is_room(X)"):
+        for node_name in kb.get_list_query_result("is_room(X)"):                    # conviene che questo diventi "is_place" ??????
             node = My_Node(node_name["X"], kb)
             
             # aggiungo il nodo all'insieme dei nodi
             nodes.add(node)
+            nodes_names.add(node_name["X"])
             
             # se il nome del nodo coincide con il nodo di partenza, lo memorizzo per poi passarlo al costruttore di default
-            if (node.get_name() == start_node_name):
-                start_node = node
+            #if (node.get_name() == start_node_name):
+            #    start_node = node
 
             # se il nome del nodo coincide con uno dei nodi goal, lo memorizzo per poi passarlo al costruttore di default
             if(node.get_name() in goal_nodes_names):
                 goal_nodes.add(node)
         
+
         # calcolo il valore euristico di ogni nodo, calcolandolo per ogni nodo e ogni nodo goal e scegliendo per ogni nodo il valore minore calcolato
 
-        # per ogni nodo, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista
 
+        # per ogni nodo, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista
+        for n in nodes:
+            for neigh in n.get_neighbors_names():
+                cost = kb.get_unique_query_result(f"direct_arc({n.get_name()},{neigh}, Cost)")["Cost"]
+                arcs.append(Arc(n.get_name(), neigh, cost))
 
         # richiamo al costruttore di default per costruire il problema
-        #super.__init__(self, nodes=nodes, arcs=arcs, start=start_node, goals=goal_nodes, hmap=heuristics)
+        super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
 
 
 
@@ -199,7 +206,12 @@ def executeSearch(kb : Knowledge_Base) -> bool:
 
 # main loop per l'esecuzione delle query utente
 knowledge_base = Knowledge_Base(FILES_LIST)
-p = My_Problem(knowledge_base,"",[],"")
+
+# faccio una prova
+p = My_Problem(knowledge_base, "lesson_room_013", ["lesson_room_011"], "student_001")
+searcher = Searcher(p)
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}")
 
 keep_going = True
 while(keep_going):

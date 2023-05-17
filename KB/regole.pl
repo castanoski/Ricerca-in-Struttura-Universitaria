@@ -3,12 +3,44 @@
 %                               Regole per il ragionamento sui permessi di accesso ad ascensore e aule                             %
 %       --------------------------------------------------------------------------------------------------------------------       % 
 
+    % Regole per capire se una persona può utilizzare il metodo per salire/scendere  
+can_go_up_with(Person, Method) :-
+    is_elevator_up(Method),
+    can_use_elevator(Person).
+
+can_go_up_with(Person, Method) :-
+    is_stairs_up(Method),
+    is_person(Person).
+
+can_go_down_with(Person, Method) :-
+    is_elevator_down(Method),
+    can_use_elevator(Person).
+
+can_go_down_with(Person, Method) :-
+    is_stairs_down(Method),
+    is_person(Person).
 
     % Regola per il permesso dell'utilizzo dell'ascensore a professori
 can_use_elevator(Person) :- 
     is_teacher(Person).
 
     % Regola per il permesso dell'utilizzo dell'ascensore a studenti
+
+
+
+    % Regola per il passaggio su un corridoio
+can_pass_hallway(Person,Hallway) :-
+    is_available_hallway(Hallway),
+    has_permission_to_pass(Person,Hallway).
+
+has_permission_to_pass(Person, Hallway) :-
+    \+is_only_with_permission(Hallway),
+    is_person(Person).
+
+    % Regole per avere il permesso esplicito a tutti i corridoi o a un corridoio specifico
+
+
+
 
 
     % Regola per il permesso dell'accesso all'ufficio da parte del docente proprietario e degli studenti del suo corso
@@ -55,18 +87,12 @@ takes_part_in_class(Person, Class) :-
     % Regole per capire se una lezione si sta svolgendo nell_aula in un determinato tempo
 is_taking_place(Class, Class_Room, Time) :-
     is_scheduled(Class, Class_Room, Start_Time, End_Time),
-    is_time_included_in(Time, Start_Time, End_Time).    % non serve che sia legale perche incluso in is_time_included_ina
+    is_time_included_in(Time, Start_Time, End_Time).    % non serve che sia legale perche incluso in is_time_included_in
 
     % Regole per capire se un certo momento è incluso tra due estremi (non strettamente incluso)
 is_time_included_in(Time, Start_Time, End_Time) :-
     is_before_time(Time, End_Time),
     is_before_time(Start_Time, Time),
-    is_legal_time(Time).
-
-is_time_included_in(Time, Time, _) :-
-    is_legal_time(Time).
-
-is_time_included_in(Time, _, Time) :-
     is_legal_time(Time).
 
     % Regole per valutare se un tempo ha un formato accettabile
@@ -91,11 +117,42 @@ is_before_time(get_time(Day, Hour1, _), get_time(Day, Hour2, _)) :-
     Hour1 < Hour2.
 
 is_before_time(get_time(Day, Hour, Minute1), get_time(Day, Hour, Minute2)) :-   % se il giorno è diverso non è before perchè
-    Minute1 < Minute2.                                                          % si intende before nello stesso giorno
+    Minute1 =< Minute2.                                                          % si intende before nello stesso giorno
 
     % Regole per capire se una stanza è disponibile o meno
 is_available_room(Room) :-
-    \+there_is_a_problem_in(Room).
+    is_room(Room),
+    \+is_unavailable(Room).
+
+is_unavailable(Place) :-
+    there_is_a_problem_in(Place).
+
+is_unavailable(Place) :-
+    has_wet_floor(Place).
+
+    % Regole per capire se un corridoio è disponibile
+is_available_hallway(Hallway) :-
+    is_hallway(Hallway),
+    \+is_unavailable(Hallway).
+
+    % Regole per capire se si tratta di un posto (cioè tutto ciò in cui si può andare)
+is_place(Place) :-
+    is_room(Place).
+
+is_place(Place) :-
+    is_elevator_down(Place).
+
+is_place(Place) :-
+    is_elevator_up(Place).
+
+is_place(Place) :-
+    is_stairs_down(Place).
+
+is_place(Place) :-
+    is_stairs_up(Place).
+
+is_place(Place) :-
+    is_hallway(Place).
 
     % Regole per determinare se si tratta di una stanza
 is_room(Room) :-
@@ -134,7 +191,8 @@ falso :-
     is_scheduled(Class2, Class_Room, Start_Time2, End_Time2),
     is_before_time(Start_Time2, End_Time1),
     is_before_time(End_Time1, End_Time2),
-    Class1 =\= Class2.                                              % controlla che effettivamente due lezioni con orario identico vadano in conflitto
+    Start_Time2 \= End_Time1,
+    Class1 \= Class2.                                              
 
     % Regole per controllare che una lezione non sia schedulata con due date non coerenti tra di loro
 falso :-
@@ -143,6 +201,15 @@ falso :-
 
 falso :-
     is_scheduled(_,_,Time,Time).
+
+    % Regole per controllare che una lezione non sia schedulata in un orario illegale
+falso :-
+    is_scheduled(_,_,Time,_),
+    \+is_legal_time(Time).
+
+falso :-
+    is_scheduled(_,_,_,Time),
+    \+is_legal_time(Time).
 
     % Regola per controllare che una lezione non sia schedulata in una stanza che non è aula di lezione
 falso :-
@@ -187,3 +254,48 @@ falso :-
 falso :-
     office_owner(Non_Teacher,_),
     \+is_teacher(Non_Teacher).              % E' corretto in questo modo? Controlla quantificazione
+
+    % Regole per garantire che nessun posto abbia più coordinate
+falso :-
+    position(Place, X1, _),
+    position(Place, X2, _),
+    X1 \= X2.
+
+falso :-
+    position(Place, _, Y1),
+    position(Place, _, Y2),
+    Y1 \= Y2.
+
+falso :-
+    floor(Place, Floor1),
+    floor(Place, Floor2),
+    Floor1 \= Floor2.
+
+    % Regole per garantire che nessuna coppia di posti abbia le stesse coordinate
+falso :-
+    position(Place1, X, Y),
+    position(Place2, X, Y),
+    floor(Place1, Floor),
+    floor(Place2, Floor),
+    Place1 \= Place2.
+
+    % Regole per garantire la coerenza del tipo degli individui
+falso :-
+    can_enter_room(Person, _, _),
+    \+is_person(Person).
+
+falso :-
+    can_enter_room(_, Room, _),
+    \+is_room(Room).
+
+falso :-
+    can_enter_room(_, _, Time),
+    \+is_legal_time(Time).
+
+falso :-
+    can_pass_hallway(Person, _),
+    \+is_person(Person).
+
+falso :-
+    is_unavailable(Place),
+    \+is_place(Place).    
