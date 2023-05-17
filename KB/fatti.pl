@@ -22,6 +22,7 @@ follows_class(student_003,cc).
 follows_class(student_003,mri).
 follows_class(student_004,icon).
 follows_class(student_004,mri).
+has_wet_floor(no_place).
 is_bath_room(bath_room_101).
 is_bath_room(bath_room_102).
 is_bath_room(bath_room_103).
@@ -82,17 +83,4 @@ teaches_class(teacher_001,reti).
 teaches_class(teacher_002,mri).
 teaches_class(teacher_003,cc).
 teaches_class(teacher_004,icon).
-direct_arc(office_room_101,office_room_102,1.0).
-direct_arc(office_room_102,office_room_101,1.0).
-direct_arc(lesson_room_011,lesson_room_012,12.21).
-direct_arc(lesson_room_011,lesson_room_013,10.3).
-direct_arc(lesson_room_011,lesson_room_014,7.62).
-direct_arc(lesson_room_012,lesson_room_011,12.21).
-direct_arc(lesson_room_012,lesson_room_013,2.24).
-direct_arc(lesson_room_012,lesson_room_014,5.0).
-direct_arc(lesson_room_013,lesson_room_011,10.3).
-direct_arc(lesson_room_013,lesson_room_012,2.24).
-direct_arc(lesson_room_013,lesson_room_014,2.83).
-direct_arc(lesson_room_014,lesson_room_011,7.62).
-direct_arc(lesson_room_014,lesson_room_012,5.0).
-direct_arc(lesson_room_014,lesson_room_013,2.83).
+there_is_a_problem_in(no_room).

@@ -185,6 +185,10 @@ def create_KB(path):
         clauses_list.append(f'position({place[0]},{place[1]},{place[2]})')
         clauses_list.append(f'floor({place[0]},{place[3]})')
 
+    # aggiungiamo le clausole per i pavimenti bagnati o per le stanze inutilizzabili
+    clauses_list.append('there_is_a_problem_in(no_room)')
+    clauses_list.append('has_wet_floor(no_place)')
+
     # ordiniamo la lista per evitare ridefinizioni
     clauses_list.sort()
 
