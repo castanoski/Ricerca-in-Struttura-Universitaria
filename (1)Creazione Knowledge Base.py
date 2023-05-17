@@ -99,6 +99,12 @@ def create_KB(path):
         ]],
     ]
 
+    hallways = [
+        ['hallway_001',1,1,30,[
+
+        ]]
+    ]
+
     students = [                            # student = [nome_studente , lista_index_corsi]
         ['student_001',['icon','reti']],
         ['student_002',['reti','mri']],
@@ -140,7 +146,7 @@ def create_KB(path):
         ],
     ]
 
-    places = office_rooms + study_rooms + bath_rooms + lesson_rooms
+    places = office_rooms + study_rooms + bath_rooms + lesson_rooms + hallways
 
     # creazione di una lista di clausole da scrivere nel file
     clauses_list = []
@@ -167,6 +173,9 @@ def create_KB(path):
     for study_room in study_rooms:
         clauses_list.append(f'is_study_room({study_room[0]})')
 
+    for hallway in hallways:
+        clauses_list.append(f'is_hallway({hallway[0]})')
+
     # aggiungiamo i fatti per i docenti
     for teacher in teachers:
         clauses_list.append(f'is_teacher({teacher[0]})')
@@ -186,8 +195,9 @@ def create_KB(path):
         clauses_list.append(f'floor({place[0]},{place[3]})')
 
     # aggiungiamo le clausole per i pavimenti bagnati o per le stanze inutilizzabili
-    clauses_list.append('there_is_a_problem_in(no_room)')
-    clauses_list.append('has_wet_floor(no_place)')
+    clauses_list.append('there_is_a_problem_in(study_room_101)')
+    clauses_list.append('has_wet_floor(study_room_101)')
+    clauses_list.append('is_only_with_permission(no_hallway)')
 
     # ordiniamo la lista per evitare ridefinizioni
     clauses_list.sort()

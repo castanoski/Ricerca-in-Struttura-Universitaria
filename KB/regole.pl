@@ -34,6 +34,7 @@ can_pass_hallway(Person,Hallway) :-
     has_permission_to_pass(Person,Hallway).
 
 has_permission_to_pass(Person, Hallway) :-
+    is_hallway(Hallway),
     \+is_only_with_permission(Hallway),
     is_person(Person).
 
@@ -64,10 +65,11 @@ can_enter_room(Person, Room, Time) :-
     is_legal_time(Time).
 
     % Regola per il permesso dell'accesso al bagno
-can_enter_room(_, Room, Time) :-
+can_enter_room(Person, Room, Time) :-
     is_available_room(Room),
     is_bath_room(Room),
-    is_legal_time(Time).
+    is_legal_time(Time),
+    is_person(Person).
 
     % Regola per il permesso dell'accesso all'aula di lezioni
 can_enter_room(Person, Class_Room, Time) :-
@@ -107,7 +109,7 @@ is_legal_time(get_time(Day, Hour, Minute)) :-
 is_legal_day(monday).
 is_legal_day(tuesday).
 is_legal_day(wednesday).
-is_legal_day(thurday).
+is_legal_day(thursday).
 is_legal_day(friday).
 is_legal_day(saturday).
 is_legal_day(sunday).
@@ -280,17 +282,6 @@ falso :-
     Place1 \= Place2.
 
     % Regole per garantire la coerenza del tipo degli individui
-falso :-
-    can_enter_room(Person, _, _),
-    \+is_person(Person).
-
-falso :-
-    can_enter_room(_, Room, _),
-    \+is_room(Room).
-
-falso :-
-    can_enter_room(_, _, Time),
-    \+is_legal_time(Time).
 
 falso :-
     can_pass_hallway(Person, _),
@@ -298,4 +289,6 @@ falso :-
 
 falso :-
     is_unavailable(Place),
-    \+is_place(Place).    
+    \+is_place(Place).
+
+

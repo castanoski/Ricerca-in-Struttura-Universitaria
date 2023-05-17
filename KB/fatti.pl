@@ -2,6 +2,7 @@ floor(bath_room_101,0).
 floor(bath_room_102,0).
 floor(bath_room_103,0).
 floor(bath_room_104,0).
+floor(hallway_001,30).
 floor(lesson_room_011,0).
 floor(lesson_room_012,0).
 floor(lesson_room_013,0).
@@ -22,11 +23,12 @@ follows_class(student_003,cc).
 follows_class(student_003,mri).
 follows_class(student_004,icon).
 follows_class(student_004,mri).
-has_wet_floor(no_place).
+has_wet_floor(study_room_101).
 is_bath_room(bath_room_101).
 is_bath_room(bath_room_102).
 is_bath_room(bath_room_103).
 is_bath_room(bath_room_104).
+is_hallway(hallway_001).
 is_lesson_room(lesson_room_011).
 is_lesson_room(lesson_room_012).
 is_lesson_room(lesson_room_013).
@@ -35,6 +37,7 @@ is_office_room(office_room_101).
 is_office_room(office_room_102).
 is_office_room(office_room_201).
 is_office_room(office_room_202).
+is_only_with_permission(no_hallway).
 is_scheduled(cc,lesson_room_013,get_time(friday,10,45),get_time(friday,12,45)).
 is_scheduled(cc,lesson_room_013,get_time(monday,10,30),get_time(monday,12,0)).
 is_scheduled(cc,lesson_room_013,get_time(thursday,8,0),get_time(thursday,11,0)).
@@ -67,6 +70,7 @@ position(bath_room_101,1,1).
 position(bath_room_102,1,2).
 position(bath_room_103,1,3).
 position(bath_room_104,1,4).
+position(hallway_001,1,1).
 position(lesson_room_011,0,1).
 position(lesson_room_012,10,8).
 position(lesson_room_013,9,6).
@@ -83,4 +87,18 @@ teaches_class(teacher_001,reti).
 teaches_class(teacher_002,mri).
 teaches_class(teacher_003,cc).
 teaches_class(teacher_004,icon).
-there_is_a_problem_in(no_room).
+there_is_a_problem_in(study_room_101).
+direct_arc(office_room_101,office_room_102,1.0).
+direct_arc(office_room_102,office_room_101,1.0).
+direct_arc(lesson_room_011,lesson_room_012,12.21).
+direct_arc(lesson_room_011,lesson_room_013,10.3).
+direct_arc(lesson_room_011,lesson_room_014,7.62).
+direct_arc(lesson_room_012,lesson_room_011,12.21).
+direct_arc(lesson_room_012,lesson_room_013,2.24).
+direct_arc(lesson_room_012,lesson_room_014,5.0).
+direct_arc(lesson_room_013,lesson_room_011,10.3).
+direct_arc(lesson_room_013,lesson_room_012,2.24).
+direct_arc(lesson_room_013,lesson_room_014,2.83).
+direct_arc(lesson_room_014,lesson_room_011,7.62).
+direct_arc(lesson_room_014,lesson_room_012,5.0).
+direct_arc(lesson_room_014,lesson_room_013,2.83).
