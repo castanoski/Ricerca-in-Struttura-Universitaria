@@ -257,6 +257,11 @@ falso :-
     office_owner(Non_Teacher,_),
     \+is_teacher(Non_Teacher).              % E' corretto in questo modo? Controlla quantificazione
 
+    % Regola per garantire che i Professori possano possedere solo Uffici
+falso :-
+    office_owner(_, Room),
+    \+is_office_room(Room).
+
     % Regole per garantire che nessun posto abbia più coordinate
 falso :-
     position(Place, X1, _),

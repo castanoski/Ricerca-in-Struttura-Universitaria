@@ -27,83 +27,205 @@ def calculate_distance_from_KB(kb : Knowledge_Base, start : str, end : str, roun
 
 def create_KB(path):
     '''
-    It creates the Knowledge Base saving it to the given path.
+    Creazione statica della Knowledge Base salvata nel path.
     '''
 
     # creazione degli individui
     office_rooms = [
-        ['office_room_101',0,0,0,[      # [nome, x, y, floor, [lista_neighbors] ]
-            'office_room_102',
-        ]],
-        ['office_room_102',1,0,0,[
-            'office_room_101',
-        ]],
-        ['office_room_202',2,0,0,[
 
-        ]],
-        ['office_room_201',3,0,0,[
+        # piano terra
 
-        ]]
+        ['office_0_21_25',21,25,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_0_21_21',
+        ]],
+        ['office_0_11_15',11,15,0,[      
+            'hallway_0_11_11',
+        ]],
+        ['office_0_5_7',5,7,0,[      
+            'hallway_0_5_11',
+        ]],
+
+        # primo piano
+
     ]
 
     lesson_rooms = [
-        ['lesson_room_011',0,1,0,[      # [nome, x, y, floor, [lista_neighbors] ]
-            'lesson_room_012',
-            'lesson_room_013',
-            'lesson_room_014'
+
+        # piano terra
+
+        ['lesson_0_3_25',3,25,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_0_3_21',
         ]],
-        ['lesson_room_012',10,8,0,[     
-            'lesson_room_011',
-            'lesson_room_013',
-            'lesson_room_014'
+        ['lesson_0_9_25',9,25,0,[     
+            'hallway_0_9_21',
         ]],
-        ['lesson_room_013',9,6,0,[     
-            'lesson_room_011',
-            'lesson_room_012',
-            'lesson_room_014'
+        ['lesson_0_17_17',17,17,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_0_21_17',
         ]],
-        ['lesson_room_014',7,4,0,[     
-            'lesson_room_011',
-            'lesson_room_012',
-            'lesson_room_013'
+        ['lesson_0_11_7',11,7,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_0_11_11',
         ]],
+
+        # primo piano
+
+        
+
     ]
 
     bath_rooms = [
-        ['bath_room_101',1,1,0,[      # [nome, x, y, floor, [lista_neighbors] ]
-            
+
+        # piano terra
+
+        ['bath_0_27_25',27,25,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_0_27_21'
         ]],
-        ['bath_room_102',1,2,0,[     
-            
-        ]],
-        ['bath_room_103',1,3,0,[     
-            
-        ]],
-        ['bath_room_104',1,4,0,[     
-            
-        ]],
+
+        # primo piano
+
+
     ]
 
     study_rooms = [
-        ['study_room_101',2,2,0,[      # [nome, x, y, floor, [lista_neighbors] ]
-            
+
+        # piano terra
+
+        ['study_0_5_17',5,17,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_0_1_17'
         ]],
-        ['study_room_102',2,3,0,[     
-            
+        ['study_0_25_11',25,11,0,[      
+            'hallway_0_29_11'
         ]],
-        ['study_room_103',2,4,0,[     
-            
-        ]],
-        ['study_room_104',2,5,0,[     
-            
-        ]],
+
+        # primo piano
+
+
     ]
 
     hallways = [
-        ['hallway_001',1,1,30,[
 
-        ]]
+        # piano terra
+
+        ['hallway_0_3_21',3,21,0,[
+            'hallway_0_9_21',
+            'hallway_0_1_17',
+            'lesson_0_3_25'
+        ]],
+        ['hallway_0_9_21',9,21,0,[
+            'hallway_0_3_21',
+            'hallway_0_15_21',
+            'lesson_0_9_25'
+        ]],
+        ['hallway_0_15_21',15,21,0,[
+            'hallway_0_9_21',
+            'hallway_0_21_21',
+            'stairs_0_15_25'
+        ]],
+        ['hallway_0_21_21',21,21,0,[
+            'hallway_0_15_21',
+            'hallway_0_27_21',
+            'office_0_21_25',
+            'hallway_0_21_17'
+        ]],
+        ['hallway_0_27_21',27,21,0,[
+            'hallway_0_21_21',
+            'hallway_0_29_17',
+            'bath_0_27_25',
+            'elev_0_33_22'
+        ]],
+        ['hallway_0_1_17',1,17,0,[
+            'hallway_0_3_21',
+            'hallway_0_1_11',
+            'study_0_5_17'
+        ]],
+        ['hallway_0_21_17',21,17,0,[
+            'hallway_0_21_21',
+            'hallway_0_21_11',
+            'lesson_0_17_17'
+        ]],
+        ['hallway_0_29_17',29,17,0,[
+            'hallway_0_27_21',
+            'hallway_0_29_11'
+        ]],
+        ['hallway_0_1_11',1,11,0,[
+            'hallway_0_1_17',
+            'hallway_0_5_11',
+            'hallway_0_1_5'
+        ]],
+        ['hallway_0_5_11',5,11,0,[
+            'hallway_0_1_11',
+            'hallway_0_11_11',
+            'office_0_5_7'
+        ]],
+        ['hallway_0_11_11',11,11,0,[
+            'hallway_0_5_11',
+            'hallway_0_17_11',
+            'office_0_11_15',
+            'lesson_0_11_7'
+        ]],
+        ['hallway_0_17_11',17,11,0,[
+            'hallway_0_11_11',
+            'hallway_0_21_11',
+        ]],
+        ['hallway_0_21_11',21,11,0,[
+            'hallway_0_17_11',
+            'hallway_0_21_17',
+            'hallway_0_21_5'
+        ]],
+        ['hallway_0_29_11',29,11,0,[
+            'hallway_0_29_17',
+            'hallway_0_29_5',
+            'study_0_25_11'
+        ]],
+        ['hallway_0_1_5',1,5,0,[
+            'hallway_0_1_11',
+            'hallway_0_3_1'
+        ]],
+        ['hallway_0_21_5',21,5,0,[
+            'hallway_0_21_11',
+            'hallway_0_21_1',
+            'elev_0_17_5'
+        ]],
+        ['hallway_0_29_5',29,5,0,[
+            'hallway_0_29_11',
+            'hallway_0_27_1'
+        ]],
+        ['hallway_0_3_1',3,1,0,[
+            'hallway_0_9_1',
+            'hallway_0_1_5'
+        ]],
+        ['hallway_0_9_1',9,1,0,[
+            'hallway_0_3_1',
+            'hallway_ingresso'
+        ]],
+        ['hallway_ingresso',15,1,0,[
+            'hallway_0_9_1',
+            'hallway_0_21_1'
+        ]],
+        ['hallway_0_21_1',21,1,0,[
+            'hallway_ingresso',
+            'hallway_0_27_1',
+            'hallway_0_21_5'
+        ]],
+        ['hallway_0_27_1',27,1,0,[
+            'hallway_0_21_1',
+            'hallway_0_29_5'
+        ]],
+
+        # primo piano
+
+
+
     ]
+
+
+    # Mancano le scale e gli ascensori:
+    #       Come fare per indicare quando salgono e scendono? 
+    #       Per esempio creare un altro elemento della lista con coppia true false
+    #       Ma rimane il problema che dovremmo poi mettere il nome del nodo arrivo.
+
+
+
+
 
     students = [                            # student = [nome_studente , lista_index_corsi]
         ['student_001',['icon','reti']],
@@ -195,8 +317,8 @@ def create_KB(path):
         clauses_list.append(f'floor({place[0]},{place[3]})')
 
     # aggiungiamo le clausole per i pavimenti bagnati o per le stanze inutilizzabili
-    clauses_list.append('there_is_a_problem_in(study_room_101)')
-    clauses_list.append('has_wet_floor(study_room_101)')
+    clauses_list.append('there_is_a_problem_in(study_0_25_11)')
+    clauses_list.append('has_wet_floor(lesson_0_17_17)')
     clauses_list.append('is_only_with_permission(no_hallway)')
 
     # ordiniamo la lista per evitare ridefinizioni
@@ -229,7 +351,7 @@ def write_clauses_on_file(clauses, file):
     It writes the list of clauses on the given file.
     '''
 
-    # appending all the clauses, adding '.' at the end.
+    # facendo l'append di tutte le clausole, aggiungendo un punto finale e andando a capo.
     file.writelines('.\n'.join(clauses) + '.\n')
 
 
