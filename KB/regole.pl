@@ -28,6 +28,20 @@ can_use_elevator(Person) :-
 
 
 
+    % Regole per il permesso sull'utilizzo di tutti i luoghi
+has_access(Person, Hallway, _) :-
+    can_pass_hallway(Person, Hallway).
+
+has_access(Person, Room, Time) :-
+    can_enter_room(Person, Room, Time).
+
+has_access(Person, Method, _) :-
+    can_go_up_with(Person, Method).
+
+has_access(Person, Method, _) :-
+    can_go_down_with(Person, Method).
+
+
     % Regola per il passaggio su un corridoio
 can_pass_hallway(Person,Hallway) :-
     is_available_hallway(Hallway),

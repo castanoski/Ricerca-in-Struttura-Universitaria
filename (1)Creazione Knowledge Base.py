@@ -31,6 +31,18 @@ def create_KB(path):
     '''
 
     # creazione degli individui
+
+    smoke_areas = [
+
+        ['smoke_area_0',15,0,0,[
+            'hallway_ingresso'
+        ]],
+        ['smoke_area_4',15,11,4,[
+            'hallway_4_11_11'
+        ]]
+
+    ]
+
     office_rooms = [
 
         # piano terra
@@ -47,6 +59,18 @@ def create_KB(path):
 
         # primo piano
 
+        ['office_1_5_17',5,17,1,[      
+            'res_hallway_1_9_17',
+        ]],
+        ['office_1_21_25',21,25,1,[      
+            'hallway_1_21_21',
+        ]],
+        ['office_1_21_5',21,5,1,[      
+            'hallway_1_21_1',
+        ]],
+
+        # secondo piano
+
     ]
 
     lesson_rooms = [
@@ -59,15 +83,26 @@ def create_KB(path):
         ['lesson_0_9_25',9,25,0,[     
             'hallway_0_9_21',
         ]],
-        ['lesson_0_17_17',17,17,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+        ['lesson_0_17_17',17,17,0,[      
             'hallway_0_21_17',
         ]],
-        ['lesson_0_11_7',11,7,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+        ['lesson_0_11_7',11,7,0,[      
             'hallway_0_11_11',
         ]],
 
         # primo piano
 
+        ['lesson_1_9_25',9,25,1,[      
+            'hallway_1_9_21',
+        ]],
+        ['lesson_1_27_25',27,25,1,[      
+            'hallway_1_27_21',
+        ]],
+        ['lesson_1_25_15',25,15,1,[      
+            'hallway_1_25_11',
+        ]],
+
+        # secondo piano
         
 
     ]
@@ -82,6 +117,11 @@ def create_KB(path):
 
         # primo piano
 
+        ['bath_1_13_15',13,15,1,[      # [nome, x, y, floor, [lista_neighbors] ]
+            'hallway_1_13_11'
+        ]],
+
+        # secondo piano
 
     ]
 
@@ -98,10 +138,18 @@ def create_KB(path):
 
         # primo piano
 
+        ['study_1_5_5',5,5,1,[      
+            'hallway_1_1_5'
+        ]],
+        ['study_1_21_17',21,17,1,[      
+            'hallway_1_21_21'
+        ]],
+
+        # secondo piano
 
     ]
 
-    hallways = [
+    normal_hallways = [
 
         # piano terra
 
@@ -199,7 +247,8 @@ def create_KB(path):
         ]],
         ['hallway_ingresso',15,1,0,[
             'hallway_0_9_1',
-            'hallway_0_21_1'
+            'hallway_0_21_1',
+            'smoke_area_0'
         ]],
         ['hallway_0_21_1',21,1,0,[
             'hallway_ingresso',
@@ -213,7 +262,170 @@ def create_KB(path):
 
         # primo piano
 
+        ['hallway_1_3_21',3,21,1,[
+            'hallway_1_9_21',
+            'hallway_1_1_17'
+        ]],
+        ['hallway_1_9_21',9,21,1,[
+            'hallway_1_3_21',
+            'hallway_1_15_21',
+            'lesson_1_9_25',
+            'res_hallway_1_9_17'
+        ]],
+        ['hallway_1_15_21',15,21,1,[
+            'hallway_1_9_21',
+            'hallway_1_21_21',
+            'stairs_1_15_25'
+        ]],
+        ['hallway_1_21_21',21,21,1,[
+            'hallway_1_15_21',
+            'hallway_1_27_21',
+            'office_1_21_25',
+            'study_1_21_17'
+        ]],
+        ['hallway_1_27_21',27,21,1,[
+            'hallway_1_21_21',
+            'hallway_1_29_17',
+            'lesson_1_27_25',
+            'elev_1_33_22'
+        ]],
+        ['hallway_1_1_17',1,17,1,[
+            'hallway_1_3_21',
+            'hallway_1_1_11'
+        ]],
+        ['hallway_1_29_17',29,17,1,[
+            'hallway_1_27_21',
+            'hallway_1_29_11'
+        ]],
+        ['hallway_1_1_11',1,11,1,[
+            'hallway_1_1_17',
+            'stairs_1_5_11',
+            'hallway_1_1_5'
+        ]],
+        ['hallway_1_13_11',13,11,1,[
+            'hallway_1_19_11',
+            'bath_1_13_15',
+            'res_hallway_1_9_11'
+        ]],
+        ['hallway_1_19_11',19,11,1,[
+            'hallway_1_13_11',
+            'hallway_1_25_11'
+        ]],
+        ['hallway_1_25_11',25,11,1,[
+            'hallway_1_29_11',
+            'hallway_1_19_11',
+            'lesson_1_25_15'
+        ]],
+        ['hallway_1_29_11',29,11,1,[
+            'hallway_1_25_11',
+            'hallway_1_29_17',
+            'lesson_1_29_5'
+        ]],
+        ['hallway_1_1_5',1,5,1,[
+            'hallway_1_1_11',
+            'hallway_1_3_1',
+            'study_1_5_5'
+        ]],
+        ['hallway_1_29_5',29,5,1,[
+            'hallway_1_29_11',
+            'hallway_1_27_1'
+        ]],
+        ['hallway_1_3_1',3,1,1,[
+            'hallway_1_9_1',
+            'hallway_1_1_5'
+        ]],
+        ['hallway_1_9_1',9,1,1,[
+            'hallway_1_3_1',
+            'res_hallway_1_9_5',
+            'hallway_1_15_1'
+        ]],
+        ['hallway_1_15_1',15,1,1,[
+            'hallway_1_9_1',
+            'hallway_1_21_1',
+            'elev_1_17_5'
+        ]],
+        ['hallway_1_21_1',21,1,1,[
+            'hallway_1_15_1',
+            'hallway_1_27_1',
+            'office_1_21_5'
+        ]],
+        ['hallway_1_27_1',27,1,1,[
+            'hallway_1_21_1',
+            'hallway_1_29_5'
+        ]]
 
+        # secondo piano
+
+
+    ]
+
+    reserved_hallways = [
+
+        # primo piano
+
+        ['res_hallway_1_9_17',9,17,1,[
+            'hallway_1_9_21',
+            'res_hallway_1_9_11',
+            'office_1_5_17'
+        ]],
+        ['res_hallway_1_9_11',9,11,1,[
+            'hallway_1_13_11',
+            'res_hallway_1_9_17',
+            'res_hallway_1_9_5'
+        ]],
+        ['res_hallway_1_9_5',9,5,1,[
+            'hallway_1_9_1',
+            'res_hallway_1_9_11'
+        ]],
+
+        # secondo piano
+
+
+    ]
+
+    elevators = [
+
+        # piano terra
+
+        ['elev_0_17_5',17,5,0,[
+            'elev_1_17_5'
+        ], [True,False]],
+        ['elev_0_33_22',33,22,0,[
+            'elev_1_33_22'
+        ], [True,False]]
+
+        # primo piano
+
+        ['elev_1_17_5',17,5,1,[
+            'elev_0_17_5'
+        ], [False,True]],
+        ['elev_1_33_22',33,22,1,[
+            'elev_0_33_22',
+            'elev_2_33_22'
+        ], [True,True]],
+
+        # secondo piano
+
+    ]
+
+    stairs = [
+
+        # piano terra
+
+        ['stairs_0_15_25',15,25,0,[
+            'stairs_1_15_25'
+        ], [True,False]],
+
+        # primo piano
+        
+        ['stairs_1_15_25',15,25,1,[
+            'stairs_0_15_25'
+        ], [False,True]],
+        ['stairs_1_5_11',5,11,1,[
+            'stairs_2_5_11'
+        ], [True,False]],
+
+        # secondo piano
 
     ]
 
