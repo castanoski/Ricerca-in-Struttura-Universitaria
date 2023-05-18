@@ -71,6 +71,19 @@ def create_KB(path):
 
         # secondo piano
 
+        ['office_2_23_11',23,11,2,[      
+            'hallway_2_19_11',
+        ]],
+        ['office_2_15_5',15,5,2,[      
+            'hallway_2_11_5',
+        ]],
+
+        # terzo piano
+
+
+
+        # quarto piano
+
     ]
 
     lesson_rooms = [
@@ -104,6 +117,21 @@ def create_KB(path):
 
         # secondo piano
         
+        ['lesson_2_21_25',21,25,2,[      
+            'hallway_2_21_21',
+        ]],
+        ['lesson_2_5_5',5,5,2,[      
+            'hallway_2_1_5',
+        ]],
+        ['lesson_2_23_5',23,5,2,[      
+            'hallway_2_19_5',
+        ]],
+
+        # terzo piano
+
+
+
+        # quarto piano
 
     ]
 
@@ -117,11 +145,21 @@ def create_KB(path):
 
         # primo piano
 
-        ['bath_1_13_15',13,15,1,[      # [nome, x, y, floor, [lista_neighbors] ]
+        ['bath_1_13_15',13,15,1,[      
             'hallway_1_13_11'
         ]],
 
         # secondo piano
+
+        ['bath_2_33_5',33,5,2,[      
+            'hallway_2_29_5'
+        ]],
+
+        # terzo piano
+
+
+
+        # quarto piano
 
     ]
 
@@ -146,6 +184,12 @@ def create_KB(path):
         ]],
 
         # secondo piano
+
+        ['study_2_15_25',15,25,2,[      
+            'hallway_2_15_21'
+        ]],
+
+        # terzo piano
 
     ]
 
@@ -352,10 +396,91 @@ def create_KB(path):
         ['hallway_1_27_1',27,1,1,[
             'hallway_1_21_1',
             'hallway_1_29_5'
-        ]]
+        ]],
 
         # secondo piano
 
+        ['hallway_2_15_21',15,21,2,[
+            'res_hallway_2_9_21',
+            'hallway_2_21_21',
+            'study_2_15_25'
+        ]],
+        ['hallway_2_21_21',21,21,2,[
+            'hallway_2_15_21',
+            'hallway_2_27_21',
+            'lesson_2_21_25'
+        ]],
+        ['hallway_2_27_21',27,21,2,[
+            'hallway_2_21_21',
+            'elev_2_33_22',
+            'hallway_2_29_17'
+        ]],
+        ['hallway_2_29_17',29,17,2,[
+            'hallway_2_27_21',
+            'hallway_2_29_11'
+        ]],
+        ['hallway_2_29_11',29,11,2,[
+            'hallway_2_29_17',
+            'hallway_2_29_5',
+            'stairs_2_33_11'
+        ]],
+        ['hallway_2_29_5',29,5,2,[
+            'hallway_2_29_11',
+            'hallway_2_27_1',
+            'bath_2_33_5'
+        ]],
+        ['hallway_2_27_1',27,1,2,[
+            'hallway_2_29_5',
+            'hallway_2_21_1'
+        ]],
+        ['hallway_2_21_1',21,1,2,[
+            'hallway_2_27_1',
+            'hallway_2_19_5'
+        ]],
+        ['hallway_2_19_5',19,5,2,[
+            'hallway_2_21_1',
+            'hallway_2_19_11',
+            'lesson_2_23_5'
+        ]],
+        ['hallway_2_19_11',19,11,2,[
+            'hallway_2_19_5',
+            'hallway_2_15_13',
+            'office_2_23_11'
+        ]],
+        ['hallway_2_15_13',15,13,2,[
+            'hallway_2_19_11',
+            'hallway_2_11_11',
+            'elev_2_15_17'
+        ]],
+        ['hallway_2_11_11',11,11,2,[
+            'hallway_2_11_5',
+            'hallway_2_15_13'
+        ]],
+        ['hallway_2_11_5',11,5,2,[
+            'hallway_2_11_11',
+            'hallway_2_9_1',
+            'office_2_15_5'
+        ]],
+        ['hallway_2_9_1',9,1,2,[
+            'hallway_2_11_5',
+            'hallway_2_3_1'
+        ]],
+        ['hallway_2_3_1',3,1,2,[
+            'hallway_2_1_5',
+            'hallway_2_9_1'
+        ]],
+        ['hallway_2_1_5',1,5,2,[
+            'hallway_2_3_1',
+            'hallway_2_1_11',
+            'lesson_2_5_5'
+        ]],
+        ['hallway_2_1_11',1,11,2,[
+            'hallway_2_1_5',
+            'res_hallway_2_1_17',
+            'stairs_2_5_11'
+        ]],
+
+        # terzo piano
 
     ]
 
@@ -380,6 +505,20 @@ def create_KB(path):
 
         # secondo piano
 
+        ['res_hallway_2_3_21',3,21,2,[
+            'res_hallway_2_9_21',
+            'res_hallway_2_1_17'
+        ]],
+        ['res_hallway_2_9_21',9,21,2,[
+            'res_hallway_2_3_21',
+            'hallway_2_15_21'
+        ]],
+        ['res_hallway_2_1_17',1,17,2,[
+            'res_hallway_2_3_21',
+            'hallway_2_1_11'
+        ]],
+
+        # terzo piano
 
     ]
 
@@ -387,12 +526,12 @@ def create_KB(path):
 
         # piano terra
 
-        ['elev_0_17_5',17,5,0,[
+        ['elev_0_17_5',17,5,0,[         #[nome,x,y,flat, [lista neighbors], [Up,Down]]
             'elev_1_17_5'
         ], [True,False]],
         ['elev_0_33_22',33,22,0,[
             'elev_1_33_22'
-        ], [True,False]]
+        ], [True,False]],
 
         # primo piano
 
@@ -405,6 +544,15 @@ def create_KB(path):
         ], [True,True]],
 
         # secondo piano
+
+        ['elev_2_33_22',33,22,2,[
+            'elev_1_33_22'
+        ], [False,True]],
+        ['elev_2_15_17',15,17,2,[
+            'elev_3_15_17'
+        ], [True,False]],
+
+        # terzo piano
 
     ]
 
@@ -426,6 +574,15 @@ def create_KB(path):
         ], [True,False]],
 
         # secondo piano
+
+        ['stairs_2_5_11',5,11,2,[
+            'stairs_1_5_11'
+        ], [False,True]],
+        ['stairs_2_33_11',33,11,2,[
+            'stairs_3_33_11'
+        ], [True,False]],
+
+        # terzo piano
 
     ]
 
@@ -480,7 +637,9 @@ def create_KB(path):
         ],
     ]
 
-    places = office_rooms + study_rooms + bath_rooms + lesson_rooms + hallways
+    hallways = normal_hallways + reserved_hallways
+
+    places = smoke_areas + office_rooms + study_rooms + bath_rooms + lesson_rooms + hallways + stairs + elevators
 
     # creazione di una lista di clausole da scrivere nel file
     clauses_list = []
