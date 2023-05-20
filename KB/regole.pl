@@ -268,14 +268,17 @@ falso :-
     is_study_room(Room),
     is_office_room(Room).
 
+                % AGGIUNGI ANCHE LE ALTRE COPPIE DI TIPI DI STANZA
+
+
     % Regole per controllare che nessuno studente insegni e nessun professore segua dei corsi
 falso :-
-    teaches_class(Student,_),
-    is_student(Student).
+    teaches_class(Teacher,_),
+    \+is_teacher(Teacher).
 
 falso :-
-    follows_class(Teacher,_),
-    is_teacher(Teacher).
+    follows_class(Student,_),
+    \+is_student(Student).
 
     % Regola per garantire che solo i professori possano avere un ufficio
 falso :-

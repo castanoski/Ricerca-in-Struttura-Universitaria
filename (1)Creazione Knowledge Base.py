@@ -796,42 +796,42 @@ def create_KB(path):
     ]
 
     students = [                            # student = [nome_studente , lista_index_corsi]
-        ['student_001',['icon','reti']],
-        ['student_002',['reti','mri']],
-        ['student_003',['cc','mri']],
-        ['student_004',['icon','mri']]
+        ['student_1',['class_1','class_2']],
+        ['student_2',['class_1','class_3']],
+        ['student_3',['class_2','class_4']],
+        ['student_4',['class_3','class_4']]
     ]
 
     teachers = [                            # teacher = [nome_prof , lista_corsi, lista_index_uffici]
-        ['teacher_001',['reti'],['office_room_102']],
-        ['teacher_002',['mri'],['office_room_202']],
-        ['teacher_003',['cc'],['office_room_101']],
-        ['teacher_004',['icon'],['office_room_201']]
+        ['teacher_1',['class_1'],['office_0_5_7']],
+        ['teacher_2',['class_2'],['office_1_21_5']],
+        ['teacher_3',['class_3'],['office_4_5_11', 'office_3_15_25']],
+        ['teacher_4',['class_4'],['office_2_23_11']]
     ]
 
     classes = [                             # cl = [nome_corso, lista_schedulazioni] dove 
-        ['icon',[                           # lista_schedulazioni = [index_aula, giorno, ora_inizio, minuti_inizio, ora_fine, minuti_fine]
-            ['lesson_room_012','monday',8,30,10,30],
-            ['lesson_room_012','friday',10,30,13,30],
-            ['lesson_room_012','wednesday',9,00,11,00]
+        ['class_1',[                           # lista_schedulazioni = [index_aula, giorno, ora_inizio, minuti_inizio, ora_fine, minuti_fine]
+            ['lesson_0_9_25','monday',8,30,10,30],
+            ['lesson_0_9_25','friday',10,30,13,30],
+            ['lesson_0_9_25','wednesday',9,00,11,00]
             ]
         ],
-        ['mri',[
-            ["lesson_room_011",'tuesday',10,30,12,30],
-            ["lesson_room_011",'friday',11,30,13,30],
-            ["lesson_room_011",'wednesday',15,00,17,00]
+        ['class_2',[
+            ["lesson_3_3_25",'tuesday',10,30,12,30],
+            ["lesson_3_3_25",'friday',11,30,13,30],
+            ["lesson_3_3_25",'wednesday',15,00,17,00]
             ]
         ],
-        ['cc',[
-            ["lesson_room_013",'monday',10,30,12,00],
-            ["lesson_room_013",'friday',10,45,12,45],
-            ["lesson_room_013",'thursday',8,00,11,00]
+        ['class_3',[
+            ["lesson_2_5_5",'monday',10,30,12,00],
+            ["lesson_2_5_5",'friday',10,45,12,45],
+            ["lesson_2_5_5",'thursday',8,00,11,00]
             ]
         ],
-        ['reti',[
-            ["lesson_room_014",'monday',11,30,14,30],
-            ["lesson_room_014",'friday',10,30,13,30],
-            ["lesson_room_014",'tuesday',13,00,16,00]
+        ['class_4',[
+            ["lesson_1_27_25",'monday',11,30,14,30],
+            ["lesson_1_27_25",'friday',10,30,13,30],
+            ["lesson_1_27_25",'tuesday',13,00,16,00]
             ]
         ],
     ]
@@ -910,7 +910,6 @@ def create_KB(path):
     # aggiungiamo le clausole per i pavimenti bagnati o per le stanze inutilizzabili
     clauses_list.append('there_is_a_problem_in(study_0_25_11)')
     clauses_list.append('has_wet_floor(lesson_0_17_17)')
-    clauses_list.append('is_only_with_permission(no_hallway)')
 
     # ordiniamo la lista per evitare ridefinizioni
     clauses_list.sort()
@@ -928,7 +927,6 @@ def create_KB(path):
 
     for place in places:
         for neighbor in place[4]:
-            print (f"{place} - {neighbor}")
             clauses_list.append(f'direct_arc({place[0]},{neighbor},{calculate_distance_from_KB(kb, place[0], neighbor)})')
 
     # aggiungiamo le nuove clausole a quelle precedentemente scritte 

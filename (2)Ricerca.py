@@ -16,6 +16,9 @@ FILES_LIST = [PATH_FACTS_KB, PATH_RULES_KB]
 PROMPT_BEGIN = "\n"
 PROMPT_END = ":\n\n  > "
 
+# AGGIUNGI INPUT TIME PER COMPLETARE
+TIME_DEFAULT = "get_time(friday,11,30)"
+
 
 
 # classe che traduce i risultati delle query alla KB in un problema di ricerca
@@ -74,9 +77,6 @@ class My_Problem(Search_problem_from_explicit_graph):
 
     def __init__(self, kb : Knowledge_Base, start_node_name : str, goal_nodes_names : list, user_name : str):
         
-        # AGGIUNGI INPUT TIME PER COMPLETARE
-        time = "get_time(friday,11,30)"
-        
         nodes = set()
         nodes_names = set()
         arcs = []
@@ -102,7 +102,7 @@ class My_Problem(Search_problem_from_explicit_graph):
         # per ogni nodo, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista
         for n in nodes:
             for neigh in n.get_neighbors_names():
-                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{time}),has_access({user_name},{neigh},{time})")):
+                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{TIME_DEFAULT}),has_access({user_name},{neigh},{TIME_DEFAULT})")):
                     cost = kb.get_unique_query_result(f"direct_arc({n.get_name()},{neigh}, Cost)")["Cost"]
                     arcs.append(Arc(n.get_name(), neigh, cost))
 
@@ -210,6 +210,8 @@ def executeSearch(kb : Knowledge_Base) -> bool:
 # main loop per l'esecuzione delle query utente
 knowledge_base = Knowledge_Base(FILES_LIST)
 
+print(knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
+
 # faccio una prova
 p = My_Problem(knowledge_base, "elev_1_17_5", ["bath_1_13_15"], "teacher_001")
 
@@ -222,7 +224,6 @@ print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
 keep_going = True
 while(keep_going):
     keep_going = executeSearch(knowledge_base)
-
 
 
 
