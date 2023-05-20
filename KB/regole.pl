@@ -183,6 +183,20 @@ is_room(Room) :-
 is_room(Room) :-
     is_office_room(Room).
 
+    % Regole per determinare se è un ascensore
+is_elevator(Method) :-
+    is_elevator_down(Method).
+
+is_elevator(Method) :-
+    is_elevator_up(Method).  
+
+    % Regole per determinare se è una scala
+is_stairs(Method) :-
+    is_stairs_down(Method).
+
+is_stairs(Method) :-
+    is_stairs_up(Method). 
+
     % Regole per determinare se si tratta di una persona
 is_person(Person) :-
     is_student(Person).
@@ -310,4 +324,5 @@ falso :-
     is_unavailable(Place),
     \+is_place(Place).
 
+    % Regole per determinare se scale o ascensori sono collegati solo con elementi di stesse coordinate e piano che differisce di 1
 

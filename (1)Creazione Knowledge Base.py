@@ -7,6 +7,10 @@ PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 FILES_LIST = [PATH_FACTS_KB, PATH_RULES_KB]
 
+# pesi degli archi tra ascensori e stanze, l'ascensore è più efficiente
+ELEVATOR_WEIGHT = 6
+STAIRS_WEIGHT = 12
+
 
 # definizione dei metodi
 def calculate_distance_from_KB(kb : Knowledge_Base, start : str, end : str, rounding=2) -> float:
@@ -18,9 +22,12 @@ def calculate_distance_from_KB(kb : Knowledge_Base, start : str, end : str, roun
 
     if(start_floor == end_floor):
         distance = math.sqrt(((start_coord["X"]-end_coord["X"])**2)+((start_coord["Y"]-end_coord["Y"])**2))
+    elif (kb.get_boolean_query_result(f"is_elevator({start})") and kb.get_boolean_query_result(f"is_elevator({end})")):
+        distance = ELEVATOR_WEIGHT
+    elif (kb.get_boolean_query_result(f"is_stairs({start})") and kb.get_boolean_query_result(f"is_stairs({end})")):
+        distance = STAIRS_WEIGHT
     else:
-        # gestisci il caso in cui non si trovino sullo stesso piano
-        pass
+        print(f"Errore: {start} e {end} sono collegate su piani diversi ma non sono coerenti tra di loro.")
 
     return round(distance, rounding)
 
@@ -80,9 +87,18 @@ def create_KB(path):
 
         # terzo piano
 
-
+        ['office_3_15_25',15,25,3,[      
+            'hallway_3_15_21',
+        ]],
+        ['office_3_17_10',17,10,3,[      
+            'res_hallway_3_13_10',
+        ]],
 
         # quarto piano
+
+        ['office_4_5_11',5,11,4,[      
+            'hallway_4_11_11',
+        ]]
 
     ]
 
@@ -129,7 +145,12 @@ def create_KB(path):
 
         # terzo piano
 
-
+        ['lesson_3_3_25',3,25,3,[      
+            'hallway_3_3_21',
+        ]],
+        ['lesson_3_21_5',21,5,3,[      
+            'hallway_3_21_1',
+        ]],
 
         # quarto piano
 
@@ -157,9 +178,15 @@ def create_KB(path):
 
         # terzo piano
 
-
+        ['bath_3_5_9',5,9,3,[      
+            'hallway_3_5_13'
+        ]],
 
         # quarto piano
+
+        ['bath_4_7_17',7,17,4,[      
+            'hallway_4_11_17'
+        ]]
 
     ]
 
@@ -190,6 +217,15 @@ def create_KB(path):
         ]],
 
         # terzo piano
+
+        ['study_3_5_17',5,17,3,[      
+            'hallway_3_5_13'
+        ]],
+        ['study_3_21_17',21,17,3,[      
+            'hallway_3_21_21'
+        ]],
+
+        # quarto piano
 
     ]
 
@@ -363,7 +399,7 @@ def create_KB(path):
         ['hallway_1_29_11',29,11,1,[
             'hallway_1_25_11',
             'hallway_1_29_17',
-            'lesson_1_29_5'
+            'hallway_1_29_5'
         ]],
         ['hallway_1_1_5',1,5,1,[
             'hallway_1_1_11',
@@ -482,6 +518,137 @@ def create_KB(path):
 
         # terzo piano
 
+        ['hallway_3_3_21',3,21,3,[
+            'hallway_3_1_17',
+            'hallway_3_9_21',
+            'lesson_3_3_25'
+        ]],
+        ['hallway_3_9_21',9,21,3,[
+            'hallway_3_3_21',
+            'hallway_3_15_21'
+        ]],
+        ['hallway_3_15_21',15,21,3,[
+            'hallway_3_21_21',
+            'hallway_3_9_21',
+            'office_3_15_25'
+        ]],
+        ['hallway_3_21_21',21,21,3,[
+            'hallway_3_15_21',
+            'hallway_3_27_21',
+            'study_3_21_17'
+        ]],
+        ['hallway_3_27_21',27,21,3,[
+            'hallway_3_29_17',
+            'hallway_3_21_21'
+        ]],
+        ['hallway_3_1_17',1,17,3,[
+            'hallway_3_1_11',
+            'hallway_3_3_21'
+        ]],
+        ['hallway_3_29_17',29,17,3,[
+            'hallway_3_29_11',
+            'hallway_3_27_21'
+        ]],
+        ['hallway_3_1_11',1,11,3,[
+            'hallway_3_1_5',
+            'hallway_3_1_17',
+            'hallway_3_5_13'
+        ]],
+        ['hallway_3_5_13',5,13,3,[
+            'hallway_3_1_11',
+            'hallway_3_11_13',
+            'study_3_5_17',
+            'bath_3_5_9'
+        ]],
+        ['hallway_3_11_13',11,13,3,[
+            'res_hallway_3_13_10',
+            'hallway_3_5_13',
+            'elev_3_15_17'
+        ]],
+        ['hallway_3_29_11',29,11,3,[
+            'hallway_3_29_17',
+            'hallway_3_29_5',
+            'stairs_3_33_11'
+        ]],
+        ['hallway_3_1_5',1,5,3,[
+            'hallway_3_1_11',
+            'hallway_3_3_1',
+            'stairs_3_5_5'
+        ]],
+        ['hallway_3_29_5',29,5,3,[
+            'hallway_3_29_11',
+            'hallway_3_27_1'
+        ]],
+        ['hallway_3_3_1',3,1,3,[
+            'hallway_3_1_5',
+            'hallway_3_9_1'
+        ]],
+        ['hallway_3_9_1',9,1,3,[
+            'hallway_3_3_1',
+            'hallway_3_15_1'
+        ]],
+        ['hallway_3_15_1',15,1,3,[
+            'hallway_3_9_1',
+            'hallway_3_21_1',
+            'res_hallway_3_13_5'
+        ]],
+        ['hallway_3_21_1',21,1,3,[
+            'hallway_3_15_1',
+            'hallway_3_27_1',
+            'lesson_3_21_5'
+        ]],
+        ['hallway_3_27_1',27,1,3,[
+            'hallway_3_21_1',
+            'hallway_3_29_5'
+        ]],
+
+        # quarto piano
+
+        ['hallway_4_3_21',3,21,4,[
+            'hallway_4_1_17',
+            'hallway_4_9_21'
+        ]],
+        ['hallway_4_9_21',9,21,4,[
+            'hallway_4_11_17',
+            'hallway_4_3_21'
+        ]],
+        ['hallway_4_1_17',1,17,4,[
+            'hallway_4_1_11',
+            'hallway_4_3_21'
+        ]],
+        ['hallway_4_11_17',11,17,4,[
+            'hallway_4_9_21',
+            'hallway_4_11_11',
+            'bath_4_7_17'
+        ]],
+        ['hallway_4_1_11',1,11,4,[
+            'hallway_4_1_5',
+            'hallway_4_1_17',
+            'office_4_5_11'
+        ]],
+        ['hallway_4_11_11',11,11,4,[
+            'hallway_4_11_5',
+            'hallway_4_11_17',
+            'smoke_area_4'
+        ]],
+        ['hallway_4_1_5',1,5,4,[
+            'hallway_4_3_1',
+            'hallway_4_1_11',
+            'stairs_4_5_5'
+        ]],
+        ['hallway_4_11_5',11,5,4,[
+            'hallway_4_9_1',
+            'hallway_4_11_11'
+        ]],
+        ['hallway_4_3_1',3,1,4,[
+            'hallway_4_1_5',
+            'hallway_4_9_1'
+        ]],
+        ['hallway_4_9_1',9,1,4,[
+            'hallway_4_11_5',
+            'hallway_4_3_1'
+        ]]
+
     ]
 
     reserved_hallways = [
@@ -520,6 +687,16 @@ def create_KB(path):
 
         # terzo piano
 
+        ['res_hallway_3_13_10',13,10,3,[
+            'res_hallway_3_13_5',
+            'hallway_3_11_13',
+            'office_3_17_10'
+        ]],
+        ['res_hallway_3_13_5',13,5,3,[
+            'res_hallway_3_13_10',
+            'hallway_3_15_1'
+        ]],
+
     ]
 
     elevators = [
@@ -527,32 +704,43 @@ def create_KB(path):
         # piano terra
 
         ['elev_0_17_5',17,5,0,[         #[nome,x,y,flat, [lista neighbors], [Up,Down]]
-            'elev_1_17_5'
+            'elev_1_17_5',
+            'hallway_0_21_5'
         ], [True,False]],
         ['elev_0_33_22',33,22,0,[
-            'elev_1_33_22'
+            'elev_1_33_22',
+            'hallway_0_27_21'
         ], [True,False]],
 
         # primo piano
 
         ['elev_1_17_5',17,5,1,[
-            'elev_0_17_5'
+            'elev_0_17_5',
+            'hallway_1_15_1'
         ], [False,True]],
         ['elev_1_33_22',33,22,1,[
             'elev_0_33_22',
-            'elev_2_33_22'
+            'elev_2_33_22',
+            'hallway_1_27_21'
         ], [True,True]],
 
         # secondo piano
 
         ['elev_2_33_22',33,22,2,[
-            'elev_1_33_22'
+            'elev_1_33_22',
+            'hallway_2_27_21'
         ], [False,True]],
         ['elev_2_15_17',15,17,2,[
-            'elev_3_15_17'
+            'elev_3_15_17',
+            'hallway_2_15_13'
         ], [True,False]],
 
         # terzo piano
+
+        ['elev_3_15_17',15,17,3,[
+            'elev_2_15_17',
+            'hallway_3_11_13'
+        ], [False,True]]
 
     ]
 
@@ -561,40 +749,51 @@ def create_KB(path):
         # piano terra
 
         ['stairs_0_15_25',15,25,0,[
-            'stairs_1_15_25'
+            'stairs_1_15_25',
+            'hallway_0_15_21'
         ], [True,False]],
 
         # primo piano
         
         ['stairs_1_15_25',15,25,1,[
-            'stairs_0_15_25'
+            'stairs_0_15_25',
+            'hallway_1_15_21'
         ], [False,True]],
         ['stairs_1_5_11',5,11,1,[
-            'stairs_2_5_11'
+            'stairs_2_5_11',
+            'hallway_1_1_11'
         ], [True,False]],
 
         # secondo piano
 
         ['stairs_2_5_11',5,11,2,[
-            'stairs_1_5_11'
+            'stairs_1_5_11',
+            'hallway_2_1_11'
         ], [False,True]],
         ['stairs_2_33_11',33,11,2,[
-            'stairs_3_33_11'
+            'stairs_3_33_11',
+            'hallway_2_29_11'
         ], [True,False]],
 
         # terzo piano
 
+        ['stairs_3_5_5',5,5,3,[
+            'stairs_4_5_5',
+            'hallway_3_1_5'
+        ], [True,False]],
+        ['stairs_3_33_11',33,11,3,[
+            'stairs_2_33_11',
+            'hallway_3_29_11'
+        ], [False,True]],
+
+        # quarto piano
+
+        ['stairs_4_5_5',5,5,4,[
+            'stairs_3_5_5',
+            'hallway_4_1_5'
+        ], [False,True]]
+
     ]
-
-
-    # Mancano le scale e gli ascensori:
-    #       Come fare per indicare quando salgono e scendono? 
-    #       Per esempio creare un altro elemento della lista con coppia true false
-    #       Ma rimane il problema che dovremmo poi mettere il nome del nodo arrivo.
-
-
-
-
 
     students = [                            # student = [nome_studente , lista_index_corsi]
         ['student_001',['icon','reti']],
@@ -638,7 +837,6 @@ def create_KB(path):
     ]
 
     hallways = normal_hallways + reserved_hallways
-
     places = smoke_areas + office_rooms + study_rooms + bath_rooms + lesson_rooms + hallways + stairs + elevators
 
     # creazione di una lista di clausole da scrivere nel file
@@ -666,8 +864,12 @@ def create_KB(path):
     for study_room in study_rooms:
         clauses_list.append(f'is_study_room({study_room[0]})')
 
+    # aggiungiamo i fatti per i corridoi
     for hallway in hallways:
         clauses_list.append(f'is_hallway({hallway[0]})')
+
+    for res_hallway in reserved_hallways:
+        clauses_list.append(f'is_only_with_permission({res_hallway[0]})')
 
     # aggiungiamo i fatti per i docenti
     for teacher in teachers:
@@ -686,6 +888,24 @@ def create_KB(path):
     for place in places:
         clauses_list.append(f'position({place[0]},{place[1]},{place[2]})')
         clauses_list.append(f'floor({place[0]},{place[3]})')
+
+    # aggiungiamo i fatti per gli ascensori
+    for elev in elevators:
+        if(elev[5][0]):
+            clauses_list.append(f'is_elevator_up({elev[0]})')
+        if(elev[5][1]):
+            clauses_list.append(f'is_elevator_down({elev[0]})')
+
+    # aggiungiamo i fatti per le scale
+    for stair in stairs:
+        if(stair[5][0]):
+            clauses_list.append(f'is_stairs_up({stair[0]})')
+        if(stair[5][1]):
+            clauses_list.append(f'is_stairs_down({stair[0]})')
+
+    # aggiungiamo i fatti per le aree fumatori
+    for s_a in smoke_areas:
+        clauses_list.append(f'is_smoke_area({s_a[0]})')
 
     # aggiungiamo le clausole per i pavimenti bagnati o per le stanze inutilizzabili
     clauses_list.append('there_is_a_problem_in(study_0_25_11)')
@@ -708,6 +928,7 @@ def create_KB(path):
 
     for place in places:
         for neighbor in place[4]:
+            print (f"{place} - {neighbor}")
             clauses_list.append(f'direct_arc({place[0]},{neighbor},{calculate_distance_from_KB(kb, place[0], neighbor)})')
 
     # aggiungiamo le nuove clausole a quelle precedentemente scritte 
