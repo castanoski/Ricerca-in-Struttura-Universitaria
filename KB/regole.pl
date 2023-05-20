@@ -28,6 +28,20 @@ can_use_elevator(Person) :-
 
 
 
+    % Regole per il permesso sull'utilizzo di tutti i luoghi
+has_access(Person, Hallway, _) :-
+    can_pass_hallway(Person, Hallway).
+
+has_access(Person, Room, Time) :-
+    can_enter_room(Person, Room, Time).
+
+has_access(Person, Method, _) :-
+    can_go_up_with(Person, Method).
+
+has_access(Person, Method, _) :-
+    can_go_down_with(Person, Method).
+
+
     % Regola per il passaggio su un corridoio
 can_pass_hallway(Person,Hallway) :-
     is_available_hallway(Hallway),
@@ -169,6 +183,20 @@ is_room(Room) :-
 is_room(Room) :-
     is_office_room(Room).
 
+    % Regole per determinare se è un ascensore
+is_elevator(Method) :-
+    is_elevator_down(Method).
+
+is_elevator(Method) :-
+    is_elevator_up(Method).  
+
+    % Regole per determinare se è una scala
+is_stairs(Method) :-
+    is_stairs_down(Method).
+
+is_stairs(Method) :-
+    is_stairs_up(Method). 
+
     % Regole per determinare se si tratta di una persona
 is_person(Person) :-
     is_student(Person).
@@ -257,6 +285,11 @@ falso :-
     office_owner(Non_Teacher,_),
     \+is_teacher(Non_Teacher).              % E' corretto in questo modo? Controlla quantificazione
 
+    % Regola per garantire che i Professori possano possedere solo Uffici
+falso :-
+    office_owner(_, Room),
+    \+is_office_room(Room).
+
     % Regole per garantire che nessun posto abbia più coordinate
 falso :-
     position(Place, X1, _),
@@ -291,4 +324,5 @@ falso :-
     is_unavailable(Place),
     \+is_place(Place).
 
+    % Regole per determinare se scale o ascensori sono collegati solo con elementi di stesse coordinate e piano che differisce di 1
 
