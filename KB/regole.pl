@@ -156,19 +156,16 @@ is_place(Place) :-
     is_room(Place).
 
 is_place(Place) :-
-    is_elevator_down(Place).
+    is_elevator(Place).
 
 is_place(Place) :-
-    is_elevator_up(Place).
-
-is_place(Place) :-
-    is_stairs_down(Place).
-
-is_place(Place) :-
-    is_stairs_up(Place).
+    is_stairs(Place).
 
 is_place(Place) :-
     is_hallway(Place).
+
+is_place(SmokeArea) :-
+    is_smoke_area(SmokeArea).
 
     % Regole per determinare se si tratta di una stanza
 is_room(Room) :-

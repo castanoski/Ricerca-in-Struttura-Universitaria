@@ -3,6 +3,8 @@ from libsRicerca.searchGeneric import Searcher, AStarSearcher
 from libsRicerca.searchProblem import Arc, Search_problem, Search_problem_from_explicit_graph
 from Knowledge_Base import Knowledge_Base
 import math
+import time
+from libsRicerca.searchMPP import SearcherMPP
 
 
 # definizione delle variabili utente
@@ -71,6 +73,10 @@ class My_Node:
 class My_Problem(Search_problem_from_explicit_graph):
 
     def __init__(self, kb : Knowledge_Base, start_node_name : str, goal_nodes_names : list, user_name : str):
+        
+        # AGGIUNGI INPUT TIME PER COMPLETARE
+        time = "get_time(friday,11,30)"
+        
         nodes = set()
         nodes_names = set()
         arcs = []
@@ -78,16 +84,12 @@ class My_Problem(Search_problem_from_explicit_graph):
         heuristics = {}
 
         # per ogni stanza creo il nodo sfruttando le info della Knowledge Base
-        for node_name in kb.get_list_query_result("is_room(X)"):                    # conviene che questo diventi "is_place" ??????
+        for node_name in kb.get_list_query_result("is_place(X)"):
             node = My_Node(node_name["X"], kb)
             
             # aggiungo il nodo all'insieme dei nodi
             nodes.add(node)
             nodes_names.add(node_name["X"])
-            
-            # se il nome del nodo coincide con il nodo di partenza, lo memorizzo per poi passarlo al costruttore di default
-            #if (node.get_name() == start_node_name):
-            #    start_node = node
 
             # se il nome del nodo coincide con uno dei nodi goal, lo memorizzo per poi passarlo al costruttore di default
             if(node.get_name() in goal_nodes_names):
@@ -100,8 +102,9 @@ class My_Problem(Search_problem_from_explicit_graph):
         # per ogni nodo, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista
         for n in nodes:
             for neigh in n.get_neighbors_names():
-                cost = kb.get_unique_query_result(f"direct_arc({n.get_name()},{neigh}, Cost)")["Cost"]
-                arcs.append(Arc(n.get_name(), neigh, cost))
+                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{time}),has_access({user_name},{neigh},{time})")):
+                    cost = kb.get_unique_query_result(f"direct_arc({n.get_name()},{neigh}, Cost)")["Cost"]
+                    arcs.append(Arc(n.get_name(), neigh, cost))
 
         # richiamo al costruttore di default per costruire il problema
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
@@ -208,11 +211,14 @@ def executeSearch(kb : Knowledge_Base) -> bool:
 knowledge_base = Knowledge_Base(FILES_LIST)
 
 # faccio una prova
-p = My_Problem(knowledge_base, "lesson_room_013", ["lesson_room_011"], "student_001")
-searcher = Searcher(p)
-solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}")
+p = My_Problem(knowledge_base, "elev_1_17_5", ["bath_1_13_15"], "teacher_001")
 
+searcher = SearcherMPP(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+# ciclo prompt
 keep_going = True
 while(keep_going):
     keep_going = executeSearch(knowledge_base)
