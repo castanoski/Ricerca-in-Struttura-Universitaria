@@ -101,9 +101,6 @@ class My_Problem(Search_problem_from_explicit_graph):
                     cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
                     arcs.append(Arc(n.get_name(), neigh, cost))
 
-        print(heuristics)
-
-
         # richiamo al costruttore di default per costruire il problema
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
 
@@ -210,15 +207,35 @@ print("Che corso, seguito da quale prof, consente allo student_1 di entrare in o
 print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
 
 # faccio una prova
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_17"], "student_1")
+print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_5:\n")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_5"], "student_1")
 
 # MPP
+print("     A* con MPP:\n")
 searcher = SearcherMPP(p)
 start_time = time.time()
 solution = searcher.search()
 print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
 
 # AStar
+print("     A* semplice:\n")
+searcher = AStarSearcher(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_11:")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_11"], "student_1")
+
+# MPP
+print("     A* con MPP:\n")
+searcher = SearcherMPP(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+# AStar
+print("     A* semplice:\n")
 searcher = AStarSearcher(p)
 start_time = time.time()
 solution = searcher.search()
