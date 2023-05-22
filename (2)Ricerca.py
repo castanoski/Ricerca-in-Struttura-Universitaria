@@ -20,12 +20,6 @@ PROMPT_END = ":\n\n  > "
 TIME_DEFAULT = "get_time(friday,11,30)"
 
 
-
-# classe che traduce i risultati delle query alla KB in un problema di ricerca
-class Problema_Ricerca_Edificio():
-    pass
-
-
 # classe per la rappresentazione di un nodo del grafo, rappresentato dal suo nome, le coordinate spaziali e una lista dei nomi dei nodi adiacenti
 class My_Node:
 
@@ -42,7 +36,7 @@ class My_Node:
         # inizializzazione dei vicini
         self.neighbors_names = []
 
-        for neighbor in kb.get_list_query_result(f"direct_arc({node_name}, Neighbor, Cost)"):
+        for neighbor in kb.get_list_query_result(f"direct_arc({node_name}, Neighbor)"):
             self.neighbors_names.append(neighbor["Neighbor"])
         
     def get_name(self) -> str:
@@ -59,8 +53,7 @@ def calculate_heuristic(start,kb:Knowledge_Base, nodes:list,user_name, rounding=
     
 
 def calculate_single_heuristic(start,kb:Knowledge_Base,goal,user_name) -> float:
-    print(kb.get_list_query_result(f"can_go_up_with_from({user_name},Method,{start})"))
-    print(user_name,start)
+    
     if(kb.get_boolean_query_result(f"is_same_floor({start},{goal})")):
         heuristic = kb.get_unique_query_result(f"distance({start},{goal},Distance)")["Distance"]
     elif(kb.get_boolean_query_result(f"is_lower_floor({start},{goal})")):
@@ -75,32 +68,6 @@ def calculate_single_heuristic(start,kb:Knowledge_Base,goal,user_name) -> float:
             heuristic = min(heuristic,new_heuristic)
     return heuristic
             
-
-
-        
-        
-        
-
-
-    """ #forse non serve, lascialo
-
-    def calculate_distance(self, nodo, rounding=2) -> float:
-        # calcolo della distanza euclidea
-        if(self.floor == nodo.floor):
-            distance = math.sqrt(((self.coord_x-nodo.coord_x)**2) + ((self.coord_y-nodo.coord_y)**2))   
-        else:
-            # piani diversi, distanza tra ascensori, scale, ecc
-            pass
-    
-        # arrotondo alle prime due cifre decimali
-        return round(distance, rounding)
-    """
-
-    def get_name(self) -> str:
-        return self.node_name
-    
-    def get_neighbors_names(self) -> list:
-        return self.neighbors_names
     
 
 # classe per la costruzione del problema di ricerca da risolvere
@@ -114,7 +81,6 @@ class My_Problem(Search_problem_from_explicit_graph):
         goal_nodes = set()
         heuristics = {}
         
-
         # per ogni stanza creo il nodo sfruttando le info della Knowledge Base
         for node_name in kb.get_list_query_result("is_place(X)"):
             node = My_Node(node_name["X"], kb)
@@ -126,23 +92,20 @@ class My_Problem(Search_problem_from_explicit_graph):
             # se il nome del nodo coincide con uno dei nodi goal, lo memorizzo per poi passarlo al costruttore di default
             if(node.get_name() in goal_nodes_names): #controlla se togliere(?)
                 goal_nodes.add(node)
-        
-
-        # calcolo il valore euristico di ogni nodo, calcolandolo per ogni nodo e ogni nodo goal e scegliendo per ogni nodo il valore minore calcolato
-        
-
-        # per ogni nodo, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista
+    
+        # per ogni nodo calcolo il valore euristico e, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista (Euclidean Distance)
         for n in nodes:
             heuristics[n.get_name()] = calculate_heuristic(n.get_name(),kb,goal_nodes_names,user_name)
             for neigh in n.get_neighbors_names():
                 if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{TIME_DEFAULT}),has_access({user_name},{neigh},{TIME_DEFAULT})")):
-                    cost = kb.get_unique_query_result(f"direct_arc({n.get_name()},{neigh}, Cost)")["Cost"]
+                    cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
                     arcs.append(Arc(n.get_name(), neigh, cost))
+
         print(heuristics)
+
+
         # richiamo al costruttore di default per costruire il problema
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
-
-
 
 
 
@@ -243,13 +206,20 @@ def executeSearch(kb : Knowledge_Base) -> bool:
 # main loop per l'esecuzione delle query utente
 knowledge_base = Knowledge_Base(FILES_LIST)
 
-print(knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
-print(knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
+print("Che corso, seguito da quale prof, consente allo student_1 di entrare in office_1_21_5?",knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
+print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
 
 # faccio una prova
-p = My_Problem(knowledge_base, "hallway_3_27_21", ["bath_3_5_9"], "teacher_1")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_17"], "student_1")
 
+# MPP
 searcher = SearcherMPP(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+# AStar
+searcher = AStarSearcher(p)
 start_time = time.time()
 solution = searcher.search()
 print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
@@ -258,6 +228,4 @@ print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
 keep_going = True
 while(keep_going):
     keep_going = executeSearch(knowledge_base)
-
-
 

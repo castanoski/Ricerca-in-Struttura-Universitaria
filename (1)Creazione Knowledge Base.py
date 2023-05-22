@@ -7,31 +7,7 @@ PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 FILES_LIST = [PATH_FACTS_KB, PATH_RULES_KB]
 
-# pesi degli archi tra ascensori e stanze, l'ascensore è più efficiente
-ELEVATOR_WEIGHT = 6
-STAIRS_WEIGHT = 12
-
-
-# definizione dei metodi
-def calculate_distance_from_KB(kb : Knowledge_Base, start : str, end : str, rounding=2) -> float:
-    start_coord = kb.get_unique_query_result(f"position({start}, X, Y)")
-    end_coord = kb.get_unique_query_result(f"position({end}, X, Y)")
-
-    start_floor = kb.get_unique_query_result(f"floor({start}, Floor)")
-    end_floor = kb.get_unique_query_result(f"floor({end}, Floor)")
-
-    if(start_floor == end_floor):
-        distance = math.sqrt(((start_coord["X"]-end_coord["X"])**2)+((start_coord["Y"]-end_coord["Y"])**2))
-    elif (kb.get_boolean_query_result(f"is_elevator({start})") and kb.get_boolean_query_result(f"is_elevator({end})")):
-        distance = ELEVATOR_WEIGHT
-    elif (kb.get_boolean_query_result(f"is_stairs({start})") and kb.get_boolean_query_result(f"is_stairs({end})")):
-        distance = STAIRS_WEIGHT
-    else:
-        print(f"Errore: {start} e {end} sono collegate su piani diversi ma non sono coerenti tra di loro.")
-
-    return round(distance, rounding)
-
-
+# definizione del metodo per la creazione della KB, con codifica di tutti gli individui
 def create_KB(path):
     '''
     Creazione statica della Knowledge Base salvata nel path.
@@ -888,6 +864,8 @@ def create_KB(path):
     for place in places:
         clauses_list.append(f'position({place[0]},{place[1]},{place[2]})')
         clauses_list.append(f'floor({place[0]},{place[3]})')
+        for neighbor in place[4]:
+            clauses_list.append(f'direct_arc({place[0]},{neighbor})')
 
     # aggiungiamo i fatti per gli ascensori
     for elev in elevators:
@@ -918,22 +896,6 @@ def create_KB(path):
     file_prolog = open(path, "w")
     write_clauses_on_file(clauses_list, file_prolog)
     file_prolog.close()
-
-    # sfruttiamo i fatti appena scritti per interrogare la kb allo scopo di calcolarci le distanze tra punti vicini
-    kb = Knowledge_Base(FILES_LIST)
-    
-    # creiamo una nuova lista
-    clauses_list = []
-
-    for place in places:
-        for neighbor in place[4]:
-            clauses_list.append(f'direct_arc({place[0]},{neighbor},{calculate_distance_from_KB(kb, place[0], neighbor)})')
-
-    # aggiungiamo le nuove clausole a quelle precedentemente scritte 
-    file_prolog = open(path, "a")
-    write_clauses_on_file(clauses_list, file_prolog)
-    file_prolog.close()
-
 
 
 def write_clauses_on_file(clauses, file):

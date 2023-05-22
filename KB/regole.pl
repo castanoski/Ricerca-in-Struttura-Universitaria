@@ -20,16 +20,13 @@ can_go_down_with(Person, Method) :-
     is_stairs_down(Method),
     is_person(Person).
 
-    % Regole per trovare l'ascensore corrispondente
+    % Regole per trovare la scala/ascensore di destinazione se si utilizza Method
 get_destination_up(Method, Destination) :-
     position(Method, X, Y),
     position(Destination, X, Y),
     floor(Method, Floor1),
     floor(Destination, Floor2),
     Floor1 is Floor2 - 1.
-
-    
-    
     
 get_destination_down(Method,Destination):-
     position(Method, X, Y),
@@ -46,7 +43,6 @@ can_go_up_with_from(Person, Method,From) :-
 can_go_down_with_from(Person,Method,From) :-
     can_go_down_with(Person,Method),
     is_same_floor(Method,From).
- 
 
     % Regola per il permesso dell'utilizzo dell'ascensore a professori
 can_use_elevator(Person) :- 
@@ -231,29 +227,47 @@ is_person(Person) :-
 
     % Regole per determinare se due stanze sono sullo stesso piano
 is_same_floor(Place1, Place2) :-
-    floor(Place1,Floor),
-    floor(Place2,Floor).
+    floor(Place1, Floor),
+    floor(Place2, Floor).
     
     % Regole per determinare se la prima stanza è a un piano inferiore della seconda
 is_lower_floor(Place1, Place2) :-
     floor(Place1,Floor1),
     floor(Place2,Floor2),
-    Floor1<Floor2.
+    Floor1 < Floor2.
 
 
     % Regola per calcolare la distanza euclidea tra due stanze dello stesso piano
-distance(Place1,Place2,Distance) :-
-    position(Place1,X1,Y1),
-    position(Place2,X2,Y2),
-    DX is X2-X1,
-    DY is Y2-Y1,
-    Distance is sqrt(DX * DX + DY * DY).
+distance(Place1, Place2, Distance) :-
+    position(Place1, X1, Y1),
+    position(Place2, X2, Y2),
+    floor(Place1, Floor),
+    floor(Place2, Floor),
+    X is X2 - X1,
+    Y is Y2 - Y1,
+    Distance is sqrt(X * X + Y * Y).
 
+    % Regole per calcolare la distanza tra due ascensori o scale attaccate
+distance(Place1, Place2, Distance) :-
+    position(Place1, X, Y),
+    position(Place2, X, Y),
+    floor(Place1, Floor1),
+    floor(Place2, Floor2),
+    Floor1 \= Floor2,
+    is_elevator(Place1),
+    is_elevator(Place2),
+    Distance is 6,            % 6 costante di distanza per gli ascensori
+    !.                          % Serve effettuare il cut perchè un ascensore è sia up che down, questo determina il fatto che ci possa essere una risposta duplicata nella query 
 
-
-
-
-    
+distance(Place1, Place2, Distance) :-
+    position(Place1, X, Y),
+    position(Place2, X, Y),
+    floor(Place1, Floor1),
+    floor(Place2, Floor2),
+    Floor1 \= Floor2,
+    is_stairs(Place1),
+    is_stairs(Place2),
+    Distance is 12.          % 6 costante di distanza per le scale
 
 
 %       --------------------------------------------------------------------------------------------------------------------       %
@@ -336,7 +350,7 @@ falso :-
     % Regola per garantire che solo i professori possano avere un ufficio
 falso :-
     office_owner(Non_Teacher,_),
-    \+is_teacher(Non_Teacher).              % E' corretto in questo modo? Controlla quantificazione
+    \+is_teacher(Non_Teacher).
 
     % Regola per garantire che i Professori possano possedere solo Uffici
 falso :-
