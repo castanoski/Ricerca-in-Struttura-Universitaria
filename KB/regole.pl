@@ -20,6 +20,34 @@ can_go_down_with(Person, Method) :-
     is_stairs_down(Method),
     is_person(Person).
 
+    % Regole per trovare l'ascensore corrispondente
+get_destination_up(Method, Destination) :-
+    position(Method, X, Y),
+    position(Destination, X, Y),
+    floor(Method, Floor1),
+    floor(Destination, Floor2),
+    Floor1 is Floor2 - 1.
+
+    
+    
+    
+get_destination_down(Method,Destination):-
+    position(Method, X, Y),
+    position(Destination, X, Y),
+    floor(Method, Floor1),
+    floor(Destination, Floor2),
+    Floor1 is Floor2 + 1.
+
+    % Regola per capire se una persona può utilizzare ascensore/scale sul piano di una certa stanza
+can_go_up_with_from(Person, Method,From) :-
+    can_go_up_with(Person,Method),
+    is_same_floor(Method,From).
+
+can_go_down_with_from(Person,Method,From) :-
+    can_go_down_with(Person,Method),
+    is_same_floor(Method,From).
+ 
+
     % Regola per il permesso dell'utilizzo dell'ascensore a professori
 can_use_elevator(Person) :- 
     is_teacher(Person).
@@ -201,6 +229,31 @@ is_person(Person) :-
 is_person(Person) :-
     is_teacher(Person).
 
+    % Regole per determinare se due stanze sono sullo stesso piano
+is_same_floor(Place1, Place2) :-
+    floor(Place1,Floor),
+    floor(Place2,Floor).
+    
+    % Regole per determinare se la prima stanza è a un piano inferiore della seconda
+is_lower_floor(Place1, Place2) :-
+    floor(Place1,Floor1),
+    floor(Place2,Floor2),
+    Floor1<Floor2.
+
+
+    % Regola per calcolare la distanza euclidea tra due stanze dello stesso piano
+distance(Place1,Place2,Distance) :-
+    position(Place1,X1,Y1),
+    position(Place2,X2,Y2),
+    DX is X2-X1,
+    DY is Y2-Y1,
+    Distance is sqrt(DX * DX + DY * DY).
+
+
+
+
+
+    
 
 
 %       --------------------------------------------------------------------------------------------------------------------       %
