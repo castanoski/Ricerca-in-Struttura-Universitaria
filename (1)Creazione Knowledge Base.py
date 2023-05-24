@@ -885,10 +885,6 @@ def create_KB(path):
     for s_a in smoke_areas:
         clauses_list.append(f'is_smoke_area({s_a[0]})')
 
-    # aggiungiamo le clausole per i pavimenti bagnati o per le stanze inutilizzabili
-    clauses_list.append('there_is_a_problem_in(study_0_25_11)')
-    clauses_list.append('has_wet_floor(lesson_0_17_17)')
-
     # ordiniamo la lista per evitare ridefinizioni
     clauses_list.sort()
 

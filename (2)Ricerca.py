@@ -5,16 +5,13 @@ from Knowledge_Base import Knowledge_Base
 import math
 import time
 from libsRicerca.searchMPP import SearcherMPP
+from utili import prompt_request, prompt
 
 
 # definizione delle variabili utente
 PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 FILES_LIST = [PATH_FACTS_KB, PATH_RULES_KB]
-
-# definizione di costanti utili per la stampa
-PROMPT_BEGIN = "\n"
-PROMPT_END = ":\n\n  > "
 
 # AGGIUNGI INPUT TIME PER COMPLETARE
 TIME_DEFAULT = "get_time(friday,11,30)"
@@ -105,126 +102,152 @@ class My_Problem(Search_problem_from_explicit_graph):
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
 
 
-
-
-def prompt(message : str):
-    '''
-    Metodo per la richiesta di input all'utente.
-    Restituisce l'input dell'utente.
-    '''
-    result = ""
-    while(result == ""):
-        result = input(f"{PROMPT_BEGIN}{message}{PROMPT_END}")
-    return result
-
-
-def executeSearchWithStartRoom(kb: Knowledge_Base, person : str, start_room : str) -> bool:
-    query = prompt(f"Immetti il codice della stanza dove vuoi arrivare, oppure /bagno per il bagno più vicino, oppure /aulastudio per l'aula studio più vicina, infine /back se vuoi cambiare stanza di parttenza")
+class My_Solver:
     
-    # se l'utente vuole cambiare stanza allora ritorna al ciclo iniziale con una nuova identificazione
-    if(query == "/back"): 
-        print(f"{PROMPT_BEGIN}cambiando stanza di partenza...")
-        return False
-    
-    if(query == "/bagno"): 
-        pass                    # query bath_room più vicino 
-    elif(query ==  "/aulastudio"):
-        pass                    # query study_room più vicina
-    elif(not kb.get_boolean_query_result(f"is_room({query})")):
-        print(f"{PROMPT_BEGIN}Il codice stanza inserito non è corretto.")
-        return True
-    else:
-        pass                    # query room selezionata
-
-    # return false per effettuare una nuova query a partire dalla stanza di partenza
-    return False
-
-
-def executeSearchWithPerson(kb : Knowledge_Base, person : str) -> bool:
-    '''
-    Metodo per l'esecuzione di una query con una persona specifica.
-    Restituisce True se l'utente non ha immesso "/logout", Falso se l'utente vuole fare logout.
-    '''
-    # richiesta stanza di partenza
-    start_room = prompt(f"Ciao {person}, immetti il codice della posizione da cui vuoi partire, /logout per scegliere un altro nome utente")
-    
-    # se l'utente vuole cambiare nome allora ritorna al ciclo iniziale con una nuova identificazione
-    if(start_room == "/logout"): 
-        print(f"{PROMPT_BEGIN}Logout in corso...")
-        return False
-    
-    # se l'utente inserisce un codice stanza che non è valido, allora inizierà un nuovo ciclo per acquisire la stanza
-    if(not kb.get_boolean_query_result(f"is_room({start_room})")):
-        print(f"{PROMPT_BEGIN}Il codice stanza inserito non è corretto.")
-        return True
-    
-    # l'utente ha inserito una stanza di partenza
-    keep_going = True
-    while(keep_going):
-        keep_going = executeSearchWithStartRoom(kb, person, start_room)
-
-    # return iniziando un nuovo ciclo con la stessa persona
-    return True
-
-
-def executeSearch(kb : Knowledge_Base) -> bool:
-    '''
-    Metodo per l'esecuzione di una query.
-    Restituisce True se l'utente non ha immesso "/quit", Falso se l'utente vuole uscire.
-    '''
-    
-    # richiesta codice utente
-    person = prompt("Identificati digitando il tuo nome utente per effettuare una query oppure scrivi '/quit' per uscire dallo script")
-
-    # se l'utente vuole uscire allora termina il programma
-    if(person == "/quit"): 
-        print(f"{PROMPT_BEGIN}Chiusura del programma.")
-        return False
-    
-    # se l'utente inserisce un codice utente che non è valido, allora inizierà un nuovo ciclo di identificazione
-    if(not kb.get_boolean_query_result(f"is_person({person})")):
-        print(f"{PROMPT_BEGIN}Il codice utente inserito non è corretto.")
-        return True
-
-    # l'utente è riuscito ad identificarsi come persona appartenente alla Knowledge Base
-    keep_going = True
-    while(keep_going):
-        keep_going = executeSearchWithPerson(kb, person)
-
-    # return iniziando un nuovo ciclo di identificazione
-    return True
+    def __init__(self, kb : Knowledge_Base) -> None:
         
+        # salva la kb
+        self.kb = kb
 
-def add_clause_for_place(kb : Knowledge_Base, place : str, problem="PROBLEM"):
+        # inizia il ciclo
+        self.main()
+
+
+    def solve_problem(self):
+
+        # creo il problema di ricerca
+        my_problem = My_Problem(self.kb, self.start, self.end, self.person)
+
+        # eseguo la ricerca con A*
+        prompt("Creazione del problema utilizzando A*:")
+        start_time = time.time()
+        AStar_Searcher = AStarSearcher(my_problem)
+        prompt(f"Creazione avvenuta in {time.time()-start_time} secondi.")
+        start_time = time.time()
+        AStar_solution = AStar_Searcher.search()
+        prompt(f"{AStar_solution}")
+        prompt(f"Costo = {AStar_solution.cost}")
+        prompt(f"Eseguito in {time.time()-start_time} secondi.")
+
+        # eseguo la ricerca con A e MPP*
+        prompt("Creazione del problema utilizzando A* con MPP:")
+        start_time = time.time()
+        mpp_Searcher = SearcherMPP(my_problem)
+        prompt(f"Creazione avvenuta in {time.time()-start_time} secondi.")
+        start_time = time.time()
+        mpp_solution = mpp_Searcher.search()
+        prompt(f"{mpp_solution}")
+        prompt(f"Costo = {mpp_solution.cost}")
+        prompt(f"Eseguito in {time.time()-start_time} secondi.")
+
+
+    def end_request(self) -> bool:
+        query = prompt_request(f"Immetti il codice del luogo dove vuoi arrivare, oppure /bagno per il bagno più vicino, oppure /aulastudio per l'aula studio più vicina, infine /back se vuoi cambiare stanza di parttenza")
         
-        PREDICATE_DICT = {
-            "PROBLEM" : "there_is_a_problem_in", 
-            "WET_FLOOR" : "has_wet_floor"
-        }
-
-        if(problem not in PREDICATE_DICT):
-            print(f"{problem} non è un parametro accettabile.")
-        elif(kb.get_boolean_query_result(f"is_place({place})")):
-            kb.add_clause(f"{PREDICATE_DICT[problem]}({place})")
+        # se l'utente vuole cambiare stanza allora ritorna al ciclo iniziale con una nuova identificazione
+        if(query == "/back"): 
+            prompt(f"Cambiando luogo di partenza...")
+            return False
+        
+        if(not self.kb.get_boolean_query_result(f"is_place({query})")):
+            prompt(f"Il codice luogo inserito non è corretto.")
+            return True
         else:
-            print(f"L'argomento '{place}' non è un luogo, pertanto non è possibile aggiungerle una clausola riguardante un luogo.")
+            # salviamo i goal a seconda della query
+            if(query == "/bagno"): 
+                pass                    # query bath_room più vicino 
+            elif(query ==  "/aulastudio"):
+                pass                    # query study_room più vicina
+            else:
+                self.end = [query]
+            
+        # risolviamo il problema
+        self.solve_problem()
+
+        # return false per effettuare una nuova query a partire dalla stanza di partenza
+        return False
 
 
+    def start_request(self) -> bool:
+        '''
+        Metodo per l'esecuzione di una query con una persona specifica.
+        Restituisce True se l'utente non ha immesso "/logout", Falso se l'utente vuole fare logout.
+        '''
+        # richiesta stanza di partenza
+        start_place = prompt_request(f"Ciao {self.person}, immetti il codice della posizione da cui vuoi partire, /logout per scegliere un altro nome utente")
+        
+        # se l'utente vuole cambiare nome allora ritorna al ciclo iniziale con una nuova identificazione
+        if(start_place == "/logout"): 
+            prompt(f"Logout in corso...")
+            return False
+        
+        # se l'utente inserisce un codice stanza che non è valido, allora inizierà un nuovo ciclo per acquisire la stanza
+        if(not self.kb.get_boolean_query_result(f"is_place({start_place})")):
+            prompt(f"Il codice stanza inserito non è corretto.")
+            return True
+        
+        # l'utente ha inserito una stanza di partenza
+        keep_going = True
+        while(keep_going):
+            self.start = start_place
+            keep_going = self.end_request()
+
+        # return iniziando un nuovo ciclo con la stessa persona
+        return True
+
+    def person_request(self) -> bool:
+        '''
+        Metodo per l'esecuzione di una query.
+        Restituisce True se l'utente non ha immesso "/quit", Falso se l'utente vuole uscire.
+        '''
+        
+        # richiesta codice utente
+        person = prompt_request("Identificati digitando il tuo nome utente per effettuare una query oppure scrivi '/quit' per uscire dallo script")
+
+        # se l'utente vuole uscire allora termina il programma
+        if(person == "/quit"): 
+            prompt(f"Chiusura del programma.")
+            return False
+        
+        # se l'utente inserisce un codice utente che non è valido, allora inizierà un nuovo ciclo di identificazione
+        if(not self.kb.get_boolean_query_result(f"is_person({person})")):
+            prompt(f"Il codice utente inserito non è corretto.")
+            return True
+
+        # l'utente è riuscito ad identificarsi come persona appartenente alla Knowledge Base
+        keep_going = True
+        while(keep_going):
+            self.person = person
+            keep_going = self.start_request()
+
+        # return iniziando un nuovo ciclo di identificazione
+        return True
+        
+    def main(self):
+        # ciclo prompt
+        keep_going = True
+        while(keep_going):
+            keep_going = self.person_request()
 
 #       --------------------------------------------------------------------------------------------------------------------       #
 #                                                   Inizio dello Script                                                            #
 #       --------------------------------------------------------------------------------------------------------------------       # 
 
-
-# main loop per l'esecuzione delle query utente
+# creazione della Knowledge Base
 knowledge_base = Knowledge_Base(FILES_LIST)
 
+# main loop per l'esecuzione delle query utente
+My_Solver(knowledge_base)
+
+
+
+#COLLO DI BOTTIGLIA
+# faccio una prova
 print("Che corso, seguito da quale prof, consente allo student_1 di entrare in office_1_21_5?",knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
 print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
 
-# faccio una prova
 print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_5:\n")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_5"], "teacher_1")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_5"], "student_1")
 
 # MPP
 print("     A* con MPP:\n")
@@ -256,9 +279,3 @@ searcher = AStarSearcher(p)
 start_time = time.time()
 solution = searcher.search()
 print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
-
-# ciclo prompt
-keep_going = True
-while(keep_going):
-    keep_going = executeSearch(knowledge_base)
-

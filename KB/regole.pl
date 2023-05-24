@@ -65,6 +65,8 @@ has_access(Person, Method, _) :-
 has_access(Person, Method, _) :-
     can_go_down_with(Person, Method).
 
+has_access(Person, Smoke_Area, _) :-
+    can_enter_smoke_area(Person, Smoke_Area).
 
     % Regola per il passaggio su un corridoio
 can_pass_hallway(Person,Hallway) :-
@@ -80,7 +82,10 @@ has_permission_to_pass(Person, Hallway) :-
 
 
 
-
+    % Regola per il permesso alla smoke area
+can_enter_smoke_area(Person, Smoke_Area) :-
+    is_available_smoke_area(Smoke_Area),
+    is_person(Person).
 
     % Regola per il permesso dell'accesso all'ufficio da parte del docente proprietario e degli studenti del suo corso
 can_enter_room(Person, Room, _) :-
@@ -115,6 +120,28 @@ can_enter_room(Person, Class_Room, Time) :-
     is_lesson_room(Class_Room),
     takes_part_in_class(Person, Class),
     is_taking_place(Class, Class_Room, Time).   % non serve che sia legale perchè implicito in is_taking_place
+
+    % Regole per capire se una stanza è disponibile o meno
+is_available_room(Room) :-
+    is_room(Room),
+    \+is_unavailable(Room).
+
+    % Regole per capire se un corridoio è disponibile
+is_available_hallway(Hallway) :-
+    is_hallway(Hallway),
+    \+is_unavailable(Hallway).
+
+    % Regole per capire se una smoke area è disponibile
+is_available_smoke_area(Smoke_Area) :-
+    is_smoke_area(Smoke_Area),
+    \+is_unavailable(Smoke_Area).
+
+    % Regole per capire se un luogo è non disponibile
+is_unavailable(Place) :-
+    there_is_a_problem_in(Place).
+
+is_unavailable(Place) :-
+    has_wet_floor(Place).
 
     % Regola per capire se uno studente prende parte al corso
 takes_part_in_class(Person, Class) :-
@@ -158,22 +185,6 @@ is_before_time(get_time(Day, Hour1, _), get_time(Day, Hour2, _)) :-
 
 is_before_time(get_time(Day, Hour, Minute1), get_time(Day, Hour, Minute2)) :-   % se il giorno è diverso non è before perchè
     Minute1 =< Minute2.                                                          % si intende before nello stesso giorno
-
-    % Regole per capire se una stanza è disponibile o meno
-is_available_room(Room) :-
-    is_room(Room),
-    \+is_unavailable(Room).
-
-is_unavailable(Place) :-
-    there_is_a_problem_in(Place).
-
-is_unavailable(Place) :-
-    has_wet_floor(Place).
-
-    % Regole per capire se un corridoio è disponibile
-is_available_hallway(Hallway) :-
-    is_hallway(Hallway),
-    \+is_unavailable(Hallway).
 
     % Regole per capire se si tratta di un posto (cioè tutto ciò in cui si può andare)
 is_place(Place) :-
@@ -389,7 +400,10 @@ falso :-
 
 falso :-
     is_unavailable(Place),
-    \+is_place(Place).
+    \+is_place(Place),
+    Place \= no_place.
 
     % Regole per determinare se scale o ascensori sono collegati solo con elementi di stesse coordinate e piano che differisce di 1
 
+
+    

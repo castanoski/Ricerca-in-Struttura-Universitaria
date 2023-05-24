@@ -470,7 +470,6 @@ follows_class(student_3,class_2).
 follows_class(student_3,class_4).
 follows_class(student_4,class_3).
 follows_class(student_4,class_4).
-has_wet_floor(lesson_0_17_17).
 is_bath_room(bath_0_27_25).
 is_bath_room(bath_1_13_15).
 is_bath_room(bath_2_33_5).
@@ -801,4 +800,3 @@ teaches_class(teacher_1,class_1).
 teaches_class(teacher_2,class_2).
 teaches_class(teacher_3,class_3).
 teaches_class(teacher_4,class_4).
-there_is_a_problem_in(study_0_25_11).
