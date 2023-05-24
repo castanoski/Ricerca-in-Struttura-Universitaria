@@ -14,6 +14,8 @@ class Knowledge_Base:
         # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
         print(f"La KB caricata è consistente? ", not self.get_boolean_query_result("falso"))
 
+    def add_clause(self, clause : str):
+        self.prolog.assertz(clause)
 
     def get_boolean_query_result(self, my_query : str) -> bool:
         '''

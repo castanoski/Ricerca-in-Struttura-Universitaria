@@ -195,6 +195,22 @@ def executeSearch(kb : Knowledge_Base) -> bool:
     return True
         
 
+def add_clause_for_place(kb : Knowledge_Base, place : str, problem="PROBLEM"):
+        
+        PREDICATE_DICT = {
+            "PROBLEM" : "there_is_a_problem_in", 
+            "WET_FLOOR" : "has_wet_floor"
+        }
+
+        if(problem not in PREDICATE_DICT):
+            print(f"{problem} non è un parametro accettabile.")
+        elif(kb.get_boolean_query_result(f"is_place({place})")):
+            kb.add_clause(f"{PREDICATE_DICT[problem]}({place})")
+        else:
+            print(f"L'argomento '{place}' non è un luogo, pertanto non è possibile aggiungerlo come posto con pavimento bagnato.")
+
+
+
 #       --------------------------------------------------------------------------------------------------------------------       #
 #                                                   Inizio dello Script                                                            #
 #       --------------------------------------------------------------------------------------------------------------------       # 
