@@ -207,7 +207,7 @@ def add_clause_for_place(kb : Knowledge_Base, place : str, problem="PROBLEM"):
         elif(kb.get_boolean_query_result(f"is_place({place})")):
             kb.add_clause(f"{PREDICATE_DICT[problem]}({place})")
         else:
-            print(f"L'argomento '{place}' non è un luogo, pertanto non è possibile aggiungerlo come posto con pavimento bagnato.")
+            print(f"L'argomento '{place}' non è un luogo, pertanto non è possibile aggiungerle una clausola riguardante un luogo.")
 
 
 
@@ -224,7 +224,7 @@ print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_1
 
 # faccio una prova
 print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_5:\n")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_5"], "student_1")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_5"], "teacher_1")
 
 # MPP
 print("     A* con MPP:\n")
