@@ -58,11 +58,13 @@ def calculate_single_heuristic(start,kb:Knowledge_Base,goal,user_name) -> float:
         for Method in kb.get_list_query_result(f"can_go_up_with_from({user_name},Method,{start})"):
             new_heuristic = kb.get_unique_query_result(f'distance({start},{Method["Method"]},D)')["D"] + calculate_single_heuristic(kb.get_unique_query_result(f'get_destination_up({Method["Method"]},D)')["D"],kb,goal,user_name)
             heuristic = min(heuristic,new_heuristic)
-    else:
+    elif(kb.get_boolean_query_result(f"is_lower_floor({goal},{start})")):
         heuristic = math.inf
         for Method in kb.get_list_query_result(f"can_go_down_with_from({user_name},Method,{start})"):
             new_heuristic = kb.get_unique_query_result(f'distance({start},{Method["Method"]},D)')["D"] + calculate_single_heuristic(kb.get_unique_query_result(f'get_destination_down({Method["Method"]},D)')["D"],kb,goal,user_name)
             heuristic = min(heuristic,new_heuristic)
+    else:
+        prompt(f"PROBLEMA con {start} e {goal}.")
     return heuristic
             
     
@@ -99,7 +101,7 @@ class My_Problem(Search_problem_from_explicit_graph):
                     arcs.append(Arc(n.get_name(), neigh, cost))
 
         # richiamo al costruttore di default per costruire il problema
-        super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
+        super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap={})
 
 
 class My_Solver:
@@ -145,26 +147,27 @@ class My_Solver:
         '''
 
     def end_request(self) -> bool:
-        query = prompt_request(f"Immetti il codice del luogo dove vuoi arrivare, oppure /bagno per il bagno più vicino, oppure /aulastudio per l'aula studio più vicina, infine /back se vuoi cambiare stanza di parttenza")
+        query = prompt_request(f"Immetti il codice del luogo dove vuoi arrivare,\n   oppure /bath per il bagno più vicino,\n   oppure /study per l'aula studio più vicina, infine /back se vuoi cambiare stanza di partenza")
         
-        # se l'utente vuole cambiare stanza allora ritorna al ciclo iniziale con una nuova identificazione
-        if(query == "/back"): 
+        # se l'utente vuole cambiare stanza allora ritorna al ciclo iniziale, altrimenti eseguo al query
+        if(self.kb.get_boolean_query_result(f"is_place({query})")):
+            self.end = [query]
+        elif(query == "/bath"): 
+            self.end = []
+            for bath in self.kb.get_list_query_result("is_bath_room(Bath)"):
+                self.end.append(bath["Bath"])
+        elif(query ==  "/study"):
+            self.end = []
+            for study in self.kb.get_list_query_result("is_study_room(Study)"):
+                self.end.append(study["Study"])
+        elif(query == "/back"): 
             prompt(f"Cambiando luogo di partenza...")
             return False
-        
-        if(not self.kb.get_boolean_query_result(f"is_place({query})")):
+        else:
             prompt(f"Il codice luogo inserito non è corretto.")
             return True
-        else:
-            # salviamo i goal a seconda della query
-            if(query == "/bagno"): 
-                pass                    # query bath_room più vicino 
-            elif(query ==  "/aulastudio"):
-                pass                    # query study_room più vicina
-            else:
-                self.end = [query]
             
-        # risolviamo il problema
+        # risolvo il problema
         self.solve_problem()
 
         # return false per effettuare una nuova query a partire dalla stanza di partenza
@@ -211,7 +214,7 @@ class My_Solver:
         if(person == "/quit"): 
             prompt(f"Chiusura del programma.")
             return False
-        
+
         # se l'utente inserisce un codice utente che non è valido, allora inizierà un nuovo ciclo di identificazione
         if(not self.kb.get_boolean_query_result(f"is_person({person})")):
             prompt(f"Il codice utente inserito non è corretto.")
@@ -250,7 +253,7 @@ print("Che corso, seguito da quale prof, consente allo student_1 di entrare in o
 print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
 
 print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_5:\n")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_5"], "student_1")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_21_21"], "student_1")
 
 # MPP
 print("     A* con MPP:\n")
@@ -267,7 +270,7 @@ solution = searcher.search()
 print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
 
 print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_11:")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_11_11"], "student_1")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_27_21"], "student_1")
 
 # MPP
 print("     A* con MPP:\n")

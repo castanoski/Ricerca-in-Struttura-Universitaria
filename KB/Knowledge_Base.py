@@ -29,7 +29,7 @@ class Knowledge_Base:
         self.ask_abnormal_facts()
 
         # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
-        print(f"La KB caricata è consistente? ", not self.get_boolean_query_result("falso"))
+        print(f"La KB caricata è consistente? ", self.is_satisfiable())
 
 
     def add_clause(self, clause : str):
@@ -38,9 +38,22 @@ class Knowledge_Base:
 
     def get_boolean_query_result(self, my_query : str) -> bool:
         '''
-        Metodo per restituire il risultato di una query booleana alla Knowòedge Base.
+        Metodo per restituire il risultato di una query booleana alla Knowledge Base.
+        Restituisce false se vi è un errore di sintassi dovuto agli argomenti della query.
         '''
+
+        # se richiedo un predicato
+        if "(" in my_query:
+            # controllo se all'interno delle parentesi non ci siano variabil che inizino con caratteri non alfabetici
+            terms = my_query.split("(")[1].split(",")
+            for term in terms:
+                if(not term[0].isalpha()):
+                    prompt(f"Errore: sintassi sbagliata della query '{my_query}' in get_boolean_query_result().")
+                    return False
+
+        # trasformo in minuscole perchè è una query booleana
         return bool(list(self.prolog.query(my_query)))
+       
 
 
     def get_list_query_result(self, my_query : str) -> list:
@@ -104,5 +117,9 @@ class Knowledge_Base:
                     
             else:
                 prompt("Formato del comando errato! Prova con < nome_posto problema > separato da un singolo spazio.")
+
+
+    def is_satisfiable(self) -> bool:
+        return not self.get_boolean_query_result("false")
 
             

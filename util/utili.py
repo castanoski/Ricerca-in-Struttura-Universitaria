@@ -10,7 +10,7 @@ def prompt_request(message : str):
     '''
     result = ""
     while(result == ""):
-        result = input(f"{PROMPT_BEGIN}{message}{PROMPT_END}")
+        result = input(f"{PROMPT_BEGIN}{message}{PROMPT_END}").lower()
     return result
 
 
