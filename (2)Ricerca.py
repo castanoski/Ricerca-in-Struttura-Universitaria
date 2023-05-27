@@ -83,6 +83,13 @@ class My_Problem(Search_problem_from_explicit_graph):
         # richiesta tempo
         current_time = f"get_time({time.strftime('%A').lower()},{time.strftime('%H')},{time.strftime('%M')})"
         prompt(f"Data attuale: {current_time}")
+
+        # stampo warning 
+        if(not kb.get_boolean_query_result(f"has_access({user_name},{start_node_name},{current_time})")):
+            prompt("WARNING: Ti trovi in un luogo a cui non hai accesso") 
+        for goal in goal_nodes_names:
+            if(not kb.get_boolean_query_result(f"has_access({user_name},{goal},{current_time})")):
+                prompt(f"WARNING: Non hai accesso al posto {goal} in questo momento.")
         
         # per ogni stanza creo il nodo sfruttando le info della Knowledge Base
         for node_name in kb.get_list_query_result("is_place(X)"):
@@ -100,9 +107,12 @@ class My_Problem(Search_problem_from_explicit_graph):
         for n in nodes:
             heuristics[n.get_name()] = calculate_heuristic(n.get_name(),kb,goal_nodes_names,user_name)
             for neigh in n.get_neighbors_names():
-                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{current_time}),has_access({user_name},{neigh},{current_time})")):
-                    cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
-                    arcs.append(Arc(n.get_name(), neigh, cost))
+                # se ho accesso al primo luogo
+                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{current_time})")):
+                    # se il secondo luogo è accessibile o è un nodo goal, allora aggiungo l'arco
+                    if(kb.get_boolean_query_result(f"has_access({user_name},{neigh},{current_time})") or  neigh in goal_nodes_names):
+                        cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
+                        arcs.append(Arc(n.get_name(), neigh, cost))
 
         # richiamo al costruttore di default per costruire il problema
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap={})
