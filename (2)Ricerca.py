@@ -86,10 +86,17 @@ class My_Problem(Search_problem_from_explicit_graph):
 
         # stampo warning 
         if(not kb.get_boolean_query_result(f"has_access({user_name},{start_node_name},{current_time})")):
-            prompt("WARNING: Ti trovi in un luogo a cui non hai accesso") 
+            if(kb.get_boolean_query_result(f"is_unavailable({start_node_name})")):
+                prompt(f"WARNING: Il posto {start_node_name} da cui vorresti partire presenta un problema che non lo rende utilizzabile.")
+            else:
+                prompt(f"WARNING: Non hai accesso al posto {start_node_name} in questo momento.")
+
         for goal in goal_nodes_names:
             if(not kb.get_boolean_query_result(f"has_access({user_name},{goal},{current_time})")):
-                prompt(f"WARNING: Non hai accesso al posto {goal} in questo momento.")
+                if(kb.get_boolean_query_result(f"is_unavailable({goal})")):
+                    prompt(f"WARNING: Il posto {goal} a cui vuoi accedere presenta un problema che non lo rende utilizzabile.")
+                else:
+                    prompt(f"WARNING: Non hai accesso al posto {goal} in questo momento.")
         
         # per ogni stanza creo il nodo sfruttando le info della Knowledge Base
         for node_name in kb.get_list_query_result("is_place(X)"):

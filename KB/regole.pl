@@ -6,19 +6,23 @@
     % Regole per capire se una persona può utilizzare il metodo per salire/scendere  
 can_go_up_with(Person, Method) :-
     is_elevator_up(Method),
-    can_use_elevator(Person).
+    can_use_elevator(Person),
+    is_available_elevator(Method).
 
 can_go_up_with(Person, Method) :-
     is_stairs_up(Method),
-    is_person(Person).
+    is_person(Person),
+    is_available_stairs(Method).
 
 can_go_down_with(Person, Method) :-
     is_elevator_down(Method),
-    can_use_elevator(Person).
+    can_use_elevator(Person),
+    is_available_elevator(Method).
 
 can_go_down_with(Person, Method) :-
     is_stairs_down(Method),
-    is_person(Person).
+    is_person(Person),
+    is_available_stairs(Method).
 
     % Regole per trovare la scala/ascensore di destinazione se si utilizza Method
 get_destination_up(Method, Destination) :-
@@ -135,6 +139,16 @@ is_available_hallway(Hallway) :-
 is_available_smoke_area(Smoke_Area) :-
     is_smoke_area(Smoke_Area),
     \+is_unavailable(Smoke_Area).
+
+    % Regole per capire se un ascensore è disponibile
+is_available_elevator(Elev) :-
+    is_elevator(Elev),
+    \+is_unavailable(Elev).
+
+    % Regole per capire se una scala è disponibile
+is_available_stairs(Stairs) :-
+    is_stairs(Stairs),
+    \+is_unavailable(Stairs).
 
     % Regole per capire se un luogo è non disponibile
 is_unavailable(Place) :-

@@ -81,10 +81,13 @@ class Knowledge_Base:
 
     def add_clause_for_place(self, place : str, problem="PROBLEM"):
 
-        if(problem not in self.PREDICATE_DICT):
+        upper_problem = problem.upper()
+        if(upper_problem not in self.PREDICATE_DICT):
             prompt(f"{problem} non è un parametro accettabile.")
         elif(self.get_boolean_query_result(f"is_place({place})")):
-            self.add_clause(f"{self.PREDICATE_DICT[problem]}({place})")
+            self.add_clause(f"{self.PREDICATE_DICT[upper_problem]}({place})")
+            self.problem_check[upper_problem] = True
+            prompt("Aggiunta con successo.")
         else:
             prompt(f"L'argomento '{place}' non è un luogo, pertanto non è possibile aggiungerle una clausola riguardante un luogo.")
 
@@ -109,8 +112,6 @@ class Knowledge_Base:
                 # aggiunta clausola
                 if(self.get_boolean_query_result(f"is_place({commands[0]})")): 
                     self.add_clause_for_place(commands[0], commands[1])
-                    self.problem_check[commands[1]] = True
-                    prompt("Aggiunta con successo.")
                 else:
                     prompt("Il codice immesso non corrisponde ad alcun luogo valido!")
                     
