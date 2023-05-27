@@ -48,7 +48,6 @@ class Knowledge_Base:
             terms = my_query.split("(")[1].split(",")
             for term in terms:
                 if(not term[0].isalpha()):
-                    prompt(f"Errore: sintassi sbagliata della query '{my_query}' in get_boolean_query_result().")
                     return False
 
         # trasformo in minuscole perchè è una query booleana

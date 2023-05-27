@@ -792,7 +792,7 @@ def create_KB(path):
         ['class_2',[
             ["lesson_3_3_25",'tuesday',10,30,12,30],
             ["lesson_3_3_25",'friday',11,30,13,30],
-            ["lesson_3_3_25",'wednesday',15,00,17,00]
+            ["lesson_3_3_25",'saturday',11,00,15,00]
             ]
         ],
         ['class_3',[

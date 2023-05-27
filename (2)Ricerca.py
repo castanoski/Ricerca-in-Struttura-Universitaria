@@ -79,6 +79,10 @@ class My_Problem(Search_problem_from_explicit_graph):
         arcs = []
         goal_nodes = set()
         heuristics = {}
+
+        # richiesta tempo
+        current_time = f"get_time({time.strftime('%A').lower()},{time.strftime('%H')},{time.strftime('%M')})"
+        prompt(f"Data attuale: {current_time}")
         
         # per ogni stanza creo il nodo sfruttando le info della Knowledge Base
         for node_name in kb.get_list_query_result("is_place(X)"):
@@ -96,7 +100,7 @@ class My_Problem(Search_problem_from_explicit_graph):
         for n in nodes:
             heuristics[n.get_name()] = calculate_heuristic(n.get_name(),kb,goal_nodes_names,user_name)
             for neigh in n.get_neighbors_names():
-                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{TIME_DEFAULT}),has_access({user_name},{neigh},{TIME_DEFAULT})")):
+                if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{current_time}),has_access({user_name},{neigh},{current_time})")):
                     cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
                     arcs.append(Arc(n.get_name(), neigh, cost))
 

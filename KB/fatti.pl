@@ -612,8 +612,8 @@ is_scheduled(class_1,lesson_0_9_25,get_time(friday,10,30),get_time(friday,13,30)
 is_scheduled(class_1,lesson_0_9_25,get_time(monday,8,30),get_time(monday,10,30)).
 is_scheduled(class_1,lesson_0_9_25,get_time(wednesday,9,0),get_time(wednesday,11,0)).
 is_scheduled(class_2,lesson_3_3_25,get_time(friday,11,30),get_time(friday,13,30)).
+is_scheduled(class_2,lesson_3_3_25,get_time(saturday,11,0),get_time(saturday,15,0)).
 is_scheduled(class_2,lesson_3_3_25,get_time(tuesday,10,30),get_time(tuesday,12,30)).
-is_scheduled(class_2,lesson_3_3_25,get_time(wednesday,15,0),get_time(wednesday,17,0)).
 is_scheduled(class_3,lesson_2_5_5,get_time(friday,10,45),get_time(friday,12,45)).
 is_scheduled(class_3,lesson_2_5_5,get_time(monday,10,30),get_time(monday,12,0)).
 is_scheduled(class_3,lesson_2_5_5,get_time(thursday,8,0),get_time(thursday,11,0)).
