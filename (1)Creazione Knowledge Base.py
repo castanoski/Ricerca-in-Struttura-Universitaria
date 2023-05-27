@@ -1,6 +1,3 @@
-# imports
-from Knowledge_Base import Knowledge_Base
-import math
 
 # definizione delle variabili utente
 PATH_FACTS_KB = './KB/fatti.pl'

@@ -1,5 +1,5 @@
 from  pyswip import Prolog
-from utili import prompt_request, prompt
+from util.utili import prompt_request, prompt
 
 # classe per la manipolazione della Knowledge Base
 class Knowledge_Base:

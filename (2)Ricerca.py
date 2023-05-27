@@ -1,11 +1,11 @@
 # imports
-from libsRicerca.searchGeneric import Searcher, AStarSearcher
-from libsRicerca.searchProblem import Arc, Search_problem, Search_problem_from_explicit_graph
-from Knowledge_Base import Knowledge_Base
+from libsRicerca.searchGeneric import AStarSearcher
+from libsRicerca.searchProblem import Arc, Search_problem_from_explicit_graph
+from KB.Knowledge_Base import Knowledge_Base
 import math
 import time
 from libsRicerca.searchMPP import SearcherMPP
-from utili import prompt_request, prompt
+from util.utili import prompt_request, prompt
 
 
 # definizione delle variabili utente
@@ -118,17 +118,6 @@ class My_Solver:
         # creo il problema di ricerca
         my_problem = My_Problem(self.kb, self.start, self.end, self.person)
 
-        # eseguo la ricerca con A*
-        prompt("Creazione del problema utilizzando A*:")
-        start_time = time.time()
-        AStar_Searcher = AStarSearcher(my_problem)
-        prompt(f"Creazione avvenuta in {time.time()-start_time} secondi.")
-        start_time = time.time()
-        AStar_solution = AStar_Searcher.search()
-        prompt(f"{AStar_solution}")
-        prompt(f"Costo = {AStar_solution.cost}")
-        prompt(f"Eseguito in {time.time()-start_time} secondi.")
-
         # eseguo la ricerca con A e MPP*
         prompt("Creazione del problema utilizzando A* con MPP:")
         start_time = time.time()
@@ -136,10 +125,24 @@ class My_Solver:
         prompt(f"Creazione avvenuta in {time.time()-start_time} secondi.")
         start_time = time.time()
         mpp_solution = mpp_Searcher.search()
-        prompt(f"{mpp_solution}")
-        prompt(f"Costo = {mpp_solution.cost}")
+        if(mpp_solution != None):
+            prompt(f"{mpp_solution}")
+            prompt(f"Costo = {mpp_solution.cost}")
         prompt(f"Eseguito in {time.time()-start_time} secondi.")
 
+        '''
+        # eseguo la ricerca con A*
+        prompt("Creazione del problema utilizzando A*:")
+        start_time = time.time()
+        AStar_Searcher = AStarSearcher(my_problem)
+        prompt(f"Creazione avvenuta in {time.time()-start_time} secondi.")
+        start_time = time.time()
+        AStar_solution = AStar_Searcher.search()
+        if(AStar_solution != None):
+            prompt(f"{AStar_solution}")
+            prompt(f"Costo = {AStar_solution.cost}")
+        prompt(f"Eseguito in {time.time()-start_time} secondi.")
+        '''
 
     def end_request(self) -> bool:
         query = prompt_request(f"Immetti il codice del luogo dove vuoi arrivare, oppure /bagno per il bagno più vicino, oppure /aulastudio per l'aula studio più vicina, infine /back se vuoi cambiare stanza di parttenza")
