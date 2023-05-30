@@ -29,7 +29,10 @@ class Knowledge_Base:
         self.ask_abnormal_facts()
 
         # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
-        print(f"La KB caricata è consistente? ", self.is_satisfiable())
+        if(self.is_satisfiable()):
+            prompt("Caricata una KB consistente.")
+        else:
+            prompt("WARNING: La KB caricata è inconsistente!")
 
 
     def add_clause(self, clause : str):
