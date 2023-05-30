@@ -30,7 +30,7 @@ class Knowledge_Base:
 
         # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
         if(self.is_satisfiable()):
-            prompt("Caricata una KB consistente.")
+            prompt("La KB caricata è consistente.")
         else:
             prompt("WARNING: La KB caricata è inconsistente!")
 

@@ -122,7 +122,7 @@ class My_Problem(Search_problem_from_explicit_graph):
                         arcs.append(Arc(n.get_name(), neigh, cost))
 
         # richiamo al costruttore di default per costruire il problema
-        super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap={})
+        super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
 
 
 class My_Solver:
