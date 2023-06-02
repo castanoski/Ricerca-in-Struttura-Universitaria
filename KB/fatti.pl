@@ -470,6 +470,10 @@ follows_class(student_3,class_2).
 follows_class(student_3,class_4).
 follows_class(student_4,class_3).
 follows_class(student_4,class_4).
+has_elevator_permission(student_2).
+has_elevator_permission(student_4).
+has_res_hallway_permission(student_3).
+has_res_hallway_permission(student_4).
 is_bath_room(bath_0_27_25).
 is_bath_room(bath_1_13_15).
 is_bath_room(bath_2_33_5).

@@ -768,11 +768,11 @@ def create_KB(path):
 
     ]
 
-    students = [                            # student = [nome_studente , lista_index_corsi]
-        ['student_1',['class_1','class_2']],
-        ['student_2',['class_1','class_3']],
-        ['student_3',['class_2','class_4']],
-        ['student_4',['class_3','class_4']]
+    students = [                            # student = [nome_studente , lista_index_corsi, permessi] dove permessi=[permesso_res, permesso_elev]
+        ['student_1',['class_1','class_2'], [False, False]],
+        ['student_2',['class_1','class_3'], [False, True]],
+        ['student_3',['class_2','class_4'], [True, False]],
+        ['student_4',['class_3','class_4'], [True, True]]
     ]
 
     teachers = [                            # teacher = [nome_prof , lista_corsi, lista_index_uffici]
@@ -820,6 +820,10 @@ def create_KB(path):
         clauses_list.append(f'is_student({student[0]})')
         for corso in student[1]:
             clauses_list.append(f'follows_class({student[0]},{corso})')
+        if(student[2][0]):
+            clauses_list.append(f'has_res_hallway_permission({student[0]})')
+        if(student[2][1]):
+            clauses_list.append(f'has_elevator_permission({student[0]})')
 
     # aggiungiamo i fatti per gli uffici
     for office in office_rooms:
