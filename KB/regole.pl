@@ -54,7 +54,9 @@ can_use_elevator(Person) :-
 
     % Regola per il permesso dell'utilizzo dell'ascensore a studenti
 
-
+can_use_elevator(Person) :- 
+    is_student(Person),
+    has_elevator_permission(Person).
 
     % Regole per il permesso sull'utilizzo di tutti i luoghi
 has_access(Person, Hallway, _) :-
@@ -82,9 +84,17 @@ has_permission_to_pass(Person, Hallway) :-
     \+is_only_with_permission(Hallway),
     is_person(Person).
 
-    % Regole per avere il permesso esplicito a tutti i corridoi o a un corridoio specifico
+    % Regole per avere il permesso a tutti i corridoi 
+has_permission_to_pass(Person, Hallway) :-
+    is_hallway(Hallway),
+    is_only_with_permission(Hallway), 
+    is_teacher(Person).
 
-
+has_permission_to_pass(Person, Hallway) :-
+    is_hallway(Hallway),
+    is_only_with_permission(Hallway), 
+    is_student(Person),
+    has_res_hallway_permission(Person).
 
     % Regola per il permesso alla smoke area
 can_enter_smoke_area(Person, Smoke_Area) :-

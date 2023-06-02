@@ -43,7 +43,9 @@ class My_Node:
         return self.neighbors_names
 
 def calculate_heuristic(start,kb:Knowledge_Base, nodes:list,user_name, rounding=2) -> float:
+    # inizializzo l'euristica a infinito
     heuristic = math.inf
+    # calcolo per ogni nodo goal l'euristica dallo start al relativo nodo goal, scegliendo il valore minimo, sottostima di tutti
     for goal in nodes:
         heuristic = min(heuristic,calculate_single_heuristic(start,kb,goal,user_name))
     return round(heuristic, rounding)
@@ -51,17 +53,49 @@ def calculate_heuristic(start,kb:Knowledge_Base, nodes:list,user_name, rounding=
 
 def calculate_single_heuristic(start,kb:Knowledge_Base,goal,user_name) -> float:
     
+    # se mi trovo nello stesso piano, calcolo la distanza euclidea
     if(kb.get_boolean_query_result(f"is_same_floor({start},{goal})")):
         heuristic = kb.get_unique_query_result(f"distance({start},{goal},Distance)")["Distance"]
+    # se devo salire, allora scelgo il minimo tra i valori dati,
+    # per ogni metodo per salire, da distanza euclidea tra start e il metodo
+    # sommata al costo di utilizzo del metodo
+    # sommata all'euristica della destinazione (ascensore o scala del piano superiore), 
+    # dove l'ultima è calcolata ricorsivamente
     elif(kb.get_boolean_query_result(f"is_lower_floor({start},{goal})")):
+
+        # inizializzo l'euristica a infinito
         heuristic = math.inf
         for Method in kb.get_list_query_result(f"can_go_up_with_from({user_name},Method,{start})"):
-            new_heuristic = kb.get_unique_query_result(f'distance({start},{Method["Method"]},D)')["D"] + calculate_single_heuristic(kb.get_unique_query_result(f'get_destination_up({Method["Method"]},D)')["D"],kb,goal,user_name)
+            # trovo il metodo per salire
+            method = Method["Method"]
+            # trovo la destinazione, cioè l'ascensore/scala del piano superiore
+            destination = kb.get_unique_query_result(f'get_destination_up({method},D)')["D"]
+
+            # inizializzo l'euristica alla distanza euclidea dal metodo per salire
+            new_heuristic = kb.get_unique_query_result(f'distance({start},{method},D)')["D"] 
+            # sommo il costo per passare dal metodo alla destinazione (tra i due ascensori o due scale)
+            new_heuristic += kb.get_unique_query_result(f'distance({method},{destination},D)')["D"]
+            # sommo l'euristica della destinazione ricorsivamente calcolata
+            new_heuristic += calculate_single_heuristic(destination,kb,goal,user_name)
+
+            # se il valore trovato è minore dei precedenti, aggiorno
             heuristic = min(heuristic,new_heuristic)
+    # analogamente per scendere
     elif(kb.get_boolean_query_result(f"is_lower_floor({goal},{start})")):
+        # inizializzo l'euristica a infinito
         heuristic = math.inf
         for Method in kb.get_list_query_result(f"can_go_down_with_from({user_name},Method,{start})"):
-            new_heuristic = kb.get_unique_query_result(f'distance({start},{Method["Method"]},D)')["D"] + calculate_single_heuristic(kb.get_unique_query_result(f'get_destination_down({Method["Method"]},D)')["D"],kb,goal,user_name)
+            # trovo il metodo per salire
+            method = Method["Method"]
+            # trovo la destinazione, cioè l'ascensore/scala del piano superiore
+            destination = kb.get_unique_query_result(f'get_destination_down({method},D)')["D"]
+
+            # inizializzo l'euristica alla distanza euclidea dal metodo per scendere
+            new_heuristic = kb.get_unique_query_result(f'distance({start},{method},D)')["D"] 
+            # sommo il costo per passare dal metodo alla destinazione (tra i due ascensori o due scale)
+            new_heuristic += kb.get_unique_query_result(f'distance({method},{destination},D)')["D"]
+            # sommo l'euristica della destinazione ricorsivamente calcolata
+            new_heuristic += calculate_single_heuristic(destination,kb,goal,user_name)
             heuristic = min(heuristic,new_heuristic)
     else:
         prompt(f"PROBLEMA con {start} e {goal}.")
@@ -77,7 +111,6 @@ class My_Problem(Search_problem_from_explicit_graph):
         nodes = set()
         nodes_names = set()
         arcs = []
-        goal_nodes = set()
         heuristics = {}
 
         # richiesta tempo
@@ -105,10 +138,6 @@ class My_Problem(Search_problem_from_explicit_graph):
             # aggiungo il nodo all'insieme dei nodi
             nodes.add(node)
             nodes_names.add(node_name["X"])
-
-            # se il nome del nodo coincide con uno dei nodi goal, lo memorizzo per poi passarlo al costruttore di default
-            if(node.get_name() in goal_nodes_names): #controlla se togliere(?)
-                goal_nodes.add(node)
     
         # per ogni nodo calcolo il valore euristico e, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista (Euclidean Distance)
         for n in nodes:
@@ -120,6 +149,8 @@ class My_Problem(Search_problem_from_explicit_graph):
                     if(kb.get_boolean_query_result(f"has_access({user_name},{neigh},{current_time})") or  neigh in goal_nodes_names):
                         cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
                         arcs.append(Arc(n.get_name(), neigh, cost))
+        
+        print(heuristics)
 
         # richiamo al costruttore di default per costruire il problema
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)

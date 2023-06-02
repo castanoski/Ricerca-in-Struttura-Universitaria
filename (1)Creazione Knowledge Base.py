@@ -4,17 +4,17 @@ PATH_FACTS_KB = './KB/fatti.pl'
 PATH_RULES_KB = './KB/regole.pl'
 FILES_LIST = [PATH_FACTS_KB, PATH_RULES_KB]
 
-# definizione del metodo per la creazione della KB, con codifica di tutti gli individui
+# definizione del metodo per la creazione della KB, con codifica di tutte le costanti per ogni individuo
 def create_KB(path):
     '''
     Creazione statica della Knowledge Base salvata nel path.
     '''
 
-    # creazione degli individui
+    # creazione delle costanti per i relativi individui
 
     smoke_areas = [
 
-        ['smoke_area_0',15,0,0,[
+        ['smoke_area_0',15,0,0,[        # [nome, x, y, floor, [lista_neighbors] ]
             'hallway_ingresso'
         ]],
         ['smoke_area_4',15,11,4,[
@@ -167,7 +167,7 @@ def create_KB(path):
 
         # piano terra
 
-        ['study_0_5_17',5,17,0,[      # [nome, x, y, floor, [lista_neighbors] ]
+        ['study_0_5_17',5,17,0,[                # [nome, x, y, floor, [lista_neighbors] ]
             'hallway_0_1_17'
         ]],
         ['study_0_25_11',25,11,0,[      
@@ -206,7 +206,7 @@ def create_KB(path):
 
         # piano terra
 
-        ['hallway_0_3_21',3,21,0,[
+        ['hallway_0_3_21',3,21,0,[              # [nome, x, y, floor, [lista_neighbors] ]
             'hallway_0_9_21',
             'hallway_0_1_17',
             'lesson_0_3_25'
@@ -628,7 +628,7 @@ def create_KB(path):
 
         # primo piano
 
-        ['res_hallway_1_9_17',9,17,1,[
+        ['res_hallway_1_9_17',9,17,1,[              # [nome, x, y, floor, [lista_neighbors] ]
             'hallway_1_9_21',
             'res_hallway_1_9_11',
             'office_1_5_17'
@@ -676,7 +676,7 @@ def create_KB(path):
 
         # piano terra
 
-        ['elev_0_17_5',17,5,0,[         #[nome,x,y,flat, [lista neighbors], [Up,Down]]
+        ['elev_0_17_5',17,5,0,[              # [nome,x,y,floor, [lista neighbors], [Up,Down]]
             'elev_1_17_5',
             'hallway_0_21_5'
         ], [True,False]],
@@ -721,7 +721,7 @@ def create_KB(path):
 
         # piano terra
 
-        ['stairs_0_15_25',15,25,0,[
+        ['stairs_0_15_25',15,25,0,[         # [nome, x, y, floor, [lista_neighbors],[Up,Down]]
             'stairs_1_15_25',
             'hallway_0_15_21'
         ], [True,False]],
@@ -768,11 +768,11 @@ def create_KB(path):
 
     ]
 
-    students = [                            # student = [nome_studente , lista_index_corsi]
-        ['student_1',['class_1','class_2']],
-        ['student_2',['class_1','class_3']],
-        ['student_3',['class_2','class_4']],
-        ['student_4',['class_3','class_4']]
+    students = [                            # student = [nome_studente , lista_index_corsi, permessi] dove permessi=[permesso_res, permesso_elev]
+        ['student_1',['class_1','class_2'], [False, False]],
+        ['student_2',['class_1','class_3'], [False, True]],
+        ['student_3',['class_2','class_4'], [True, False]],
+        ['student_4',['class_3','class_4'], [True, True]]
     ]
 
     teachers = [                            # teacher = [nome_prof , lista_corsi, lista_index_uffici]
@@ -820,6 +820,10 @@ def create_KB(path):
         clauses_list.append(f'is_student({student[0]})')
         for corso in student[1]:
             clauses_list.append(f'follows_class({student[0]},{corso})')
+        if(student[2][0]):
+            clauses_list.append(f'has_res_hallway_permission({student[0]})')
+        if(student[2][1]):
+            clauses_list.append(f'has_elevator_permission({student[0]})')
 
     # aggiungiamo i fatti per gli uffici
     for office in office_rooms:
