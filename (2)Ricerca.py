@@ -106,7 +106,7 @@ def calculate_single_heuristic(start,kb:Knowledge_Base,goal,user_name) -> float:
 # classe per la costruzione del problema di ricerca da risolvere
 class My_Problem(Search_problem_from_explicit_graph):
 
-    def __init__(self, kb : Knowledge_Base, start_node_name : str, goal_nodes_names : list, user_name : str):
+    def __init__(self, kb : Knowledge_Base, start_node_name : str, goal_nodes_names : list, user_name : str, use_heuristic : bool = True):
         
         nodes = set()
         nodes_names = set()
@@ -141,7 +141,8 @@ class My_Problem(Search_problem_from_explicit_graph):
     
         # per ogni nodo calcolo il valore euristico e, per ogni adiacente, effettuo la query sul valore dell'arco che li collega e aggiungo l'arco alla lista (Euclidean Distance)
         for n in nodes:
-            heuristics[n.get_name()] = calculate_heuristic(n.get_name(),kb,goal_nodes_names,user_name)
+            if(use_heuristic):
+                heuristics[n.get_name()] = calculate_heuristic(n.get_name(),kb,goal_nodes_names,user_name)
             for neigh in n.get_neighbors_names():
                 # se ho accesso al primo luogo
                 if (kb.get_boolean_query_result(f"has_access({user_name},{n.get_name()},{current_time})")):
@@ -149,8 +150,6 @@ class My_Problem(Search_problem_from_explicit_graph):
                     if(kb.get_boolean_query_result(f"has_access({user_name},{neigh},{current_time})") or  neigh in goal_nodes_names):
                         cost = kb.get_unique_query_result(f"distance({n.get_name()},{neigh}, Cost)")["Cost"]
                         arcs.append(Arc(n.get_name(), neigh, cost))
-        
-        print(heuristics)
 
         # richiamo al costruttore di default per costruire il problema
         super().__init__(nodes=nodes_names, arcs=arcs, start=start_node_name, goals=goal_nodes_names, hmap=heuristics)
@@ -295,17 +294,51 @@ class My_Solver:
 knowledge_base = Knowledge_Base(FILES_LIST)
 
 # main loop per l'esecuzione delle query utente
-My_Solver(knowledge_base)
+#My_Solver(knowledge_base)
 
 
 
 #COLLO DI BOTTIGLIA
 # faccio una prova
-print("Che corso, seguito da quale prof, consente allo student_1 di entrare in office_1_21_5?",knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
-print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
+#print("Che corso, seguito da quale prof, consente allo student_1 di entrare in office_1_21_5?",knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
+#print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
 
-print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_5:\n")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_21_21"], "student_1")
+print(" Risolviamo il problema tra hallway_ingresso e hallway_2_27_1:\n")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_27_1"], "student_1")
+pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_27_1"], "student_1", use_heuristic=False)
+
+
+# MPP
+print("     A* con MPP:\n")
+searcher = SearcherMPP(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+# AStar
+print("     A* semplice:\n")
+searcher = AStarSearcher(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+# LCFS MPP:
+print("     LCFS con MPP:\n")
+searcher = SearcherMPP(pWithoutHeuristic)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+# LCFS
+#print("     LCFS semplice:\n")
+#searcher = AStarSearcher(pWithoutHeuristic)
+#start_time = time.time()
+#solution = searcher.search()
+#print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+print(" Risolviamo il problema tra hallway_ingresso e hallway_2_29_5:")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_5"], "student_1")
+pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_5"], "student_1", use_heuristic=False)
 
 # MPP
 print("     A* con MPP:\n")
@@ -321,19 +354,19 @@ start_time = time.time()
 solution = searcher.search()
 print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
 
-print(" Risolviamo il problema tra hallway_ingresso e hallway_2_11_11:")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_27_21"], "student_1")
-
-# MPP
-print("     A* con MPP:\n")
-searcher = SearcherMPP(p)
+# LCFS MPP:
+print("     LCFS con MPP:\n")
+searcher = SearcherMPP(pWithoutHeuristic)
 start_time = time.time()
 solution = searcher.search()
 print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
 
-# AStar
-print("     A* semplice:\n")
-searcher = AStarSearcher(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+# LCFS
+#print("     LCFS semplice:\n")
+#searcher = AStarSearcher(pWithoutHeuristic)
+#start_time = time.time()
+#solution = searcher.search()
+#print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+
+print(knowledge_base.get_list_query_result("is_place(X)"))
+print(len(knowledge_base.get_list_query_result("is_place(X)")))
