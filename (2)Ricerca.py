@@ -303,70 +303,71 @@ knowledge_base = Knowledge_Base(FILES_LIST)
 #print("Che corso, seguito da quale prof, consente allo student_1 di entrare in office_1_21_5?",knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
 #print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
 
-print(" Risolviamo il problema tra hallway_ingresso e hallway_2_27_1:\n")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_27_1"], "student_1")
-pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_27_1"], "student_1", use_heuristic=False)
-
-
-# MPP
-print("     A* con MPP:\n")
-searcher = SearcherMPP(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
-
-# AStar
-print("     A* semplice:\n")
-searcher = AStarSearcher(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
-
-# LCFS MPP:
-print("     LCFS con MPP:\n")
-searcher = SearcherMPP(pWithoutHeuristic)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
-
-# LCFS
-#print("     LCFS semplice:\n")
-#searcher = AStarSearcher(pWithoutHeuristic)
-#start_time = time.time()
-#solution = searcher.search()
-#print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
-
-print(" Risolviamo il problema tra hallway_ingresso e hallway_2_29_5:")
+print(" Risolviamo il problema tra hallway_ingresso e hallway_2_29_5:\n")
 p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_5"], "student_1")
 pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_5"], "student_1", use_heuristic=False)
 
+
 # MPP
 print("     A* con MPP:\n")
 searcher = SearcherMPP(p)
 start_time = time.time()
 solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
 
 # AStar
 print("     A* semplice:\n")
 searcher = AStarSearcher(p)
 start_time = time.time()
 solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
 
 # LCFS MPP:
 print("     LCFS con MPP:\n")
 searcher = SearcherMPP(pWithoutHeuristic)
 start_time = time.time()
 solution = searcher.search()
-print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
 
 # LCFS
-#print("     LCFS semplice:\n")
-#searcher = AStarSearcher(pWithoutHeuristic)
-#start_time = time.time()
-#solution = searcher.search()
-#print(f"\n$ {solution}\n$ {solution.cost}\n$ in {time.time()-start_time}s.")
+print("     LCFS semplice:\n")
+searcher = AStarSearcher(pWithoutHeuristic)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
 
-print(knowledge_base.get_list_query_result("is_place(X)"))
-print(len(knowledge_base.get_list_query_result("is_place(X)")))
+'''
+
+print(" Risolviamo il problema tra hallway_ingresso e hallway_1_1_17:")
+p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_1_17"], "student_1")
+pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_1_17"], "student_1", use_heuristic=False)
+
+# MPP
+print("     A* con MPP:\n")
+searcher = SearcherMPP(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
+
+# AStar
+print("     A* semplice:\n")
+searcher = AStarSearcher(p)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
+
+# LCFS MPP:
+print("     LCFS con MPP:\n")
+searcher = SearcherMPP(pWithoutHeuristic)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
+
+# LCFS
+print("     LCFS semplice:\n")
+searcher = AStarSearcher(pWithoutHeuristic)
+start_time = time.time()
+solution = searcher.search()
+print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
+
+'''

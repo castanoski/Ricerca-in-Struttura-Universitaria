@@ -3,6 +3,16 @@
 %                               Regole per il ragionamento sui permessi di accesso ad ascensore e aule                             %
 %       --------------------------------------------------------------------------------------------------------------------       % 
 
+    % Regola per il permesso dell'utilizzo dell'ascensore a professori
+can_use_elevator(Person) :- 
+    is_teacher(Person).
+
+    % Regola per il permesso dell'utilizzo dell'ascensore a studenti
+
+can_use_elevator(Person) :- 
+    is_student(Person),
+    has_elevator_permission(Person).
+
     % Regole per capire se una persona può utilizzare il metodo per salire/scendere  
 can_go_up_with(Person, Method) :-
     is_elevator_up(Method),
@@ -24,6 +34,15 @@ can_go_down_with(Person, Method) :-
     is_person(Person),
     is_available_stairs(Method).
 
+% Regola per capire se una persona può utilizzare ascensore/scale sul piano di una certa stanza
+can_go_up_with_from(Person, Method,From) :-
+    can_go_up_with(Person,Method),
+    is_same_floor(Method,From).
+
+can_go_down_with_from(Person,Method,From) :-
+    can_go_down_with(Person,Method),
+    is_same_floor(Method,From).
+
     % Regole per trovare la scala/ascensore di destinazione se si utilizza Method
 get_destination_up(Method, Destination) :-
     position(Method, X, Y),
@@ -39,24 +58,8 @@ get_destination_down(Method,Destination):-
     floor(Destination, Floor2),
     Floor1 is Floor2 + 1.
 
-    % Regola per capire se una persona può utilizzare ascensore/scale sul piano di una certa stanza
-can_go_up_with_from(Person, Method,From) :-
-    can_go_up_with(Person,Method),
-    is_same_floor(Method,From).
 
-can_go_down_with_from(Person,Method,From) :-
-    can_go_down_with(Person,Method),
-    is_same_floor(Method,From).
 
-    % Regola per il permesso dell'utilizzo dell'ascensore a professori
-can_use_elevator(Person) :- 
-    is_teacher(Person).
-
-    % Regola per il permesso dell'utilizzo dell'ascensore a studenti
-
-can_use_elevator(Person) :- 
-    is_student(Person),
-    has_elevator_permission(Person).
 
     % Regole per il permesso sull'utilizzo di tutti i luoghi
 has_access(Person, Hallway, _) :-
