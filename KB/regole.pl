@@ -8,7 +8,6 @@ can_use_elevator(Person) :-
     is_teacher(Person).
 
     % Regola per il permesso dell'utilizzo dell'ascensore a studenti
-
 can_use_elevator(Person) :- 
     is_student(Person),
     has_elevator_permission(Person).
@@ -57,9 +56,6 @@ get_destination_down(Method,Destination):-
     floor(Method, Floor1),
     floor(Destination, Floor2),
     Floor1 is Floor2 + 1.
-
-
-
 
     % Regole per il permesso sull'utilizzo di tutti i luoghi
 has_access(Person, Hallway, _) :-
@@ -274,7 +270,6 @@ is_lower_floor(Place1, Place2) :-
     floor(Place2,Floor2),
     Floor1 < Floor2.
 
-
     % Regola per calcolare la distanza euclidea tra due stanze dello stesso piano
 distance(Place1, Place2, Distance) :-
     position(Place1, X1, Y1),
@@ -315,7 +310,7 @@ distance(Place1, Place2, Distance) :-
     % Regola che vincola una persona a non poter essere ne docente ne studente
 falso :-
     is_teacher(Person),
-    is_student(Person).     % aggiungi nel caso ci siano altri ruoli da aggiungere
+    is_student(Person).  
 
     % Regola per il controllo di aule eventualmente occupate da più lezioni contemporaneamente
 falso :-
@@ -348,7 +343,7 @@ falso :-
     is_scheduled(_, Room, _, _),
     \+is_lesson_room(Room).
 
-    % Regole per controllare la presenza di aule che siano di due tipi diversi 
+    % Regole per controllare la presenza di posti che siano di due tipi diversi 
 falso :-
     is_bath_room(Room),
     is_lesson_room(Room).
@@ -362,6 +357,22 @@ falso :-
     is_office_room(Room).
 
 falso :-
+    is_bath_room(Room),
+    is_smoke_area(Room).
+
+falso :-
+    is_bath_room(Room),
+    is_elevator(Room).
+
+falso :-
+    is_bath_room(Room),
+    is_hallway(Room).
+
+falso :-
+    is_bath_room(Room),
+    is_stairs(Room).
+
+falso :-
     is_lesson_room(Room),
     is_study_room(Room).
 
@@ -370,11 +381,80 @@ falso :-
     is_office_room(Room).
 
 falso :-
+    is_lesson_room(Room),
+    is_smoke_area(Room).
+
+falso :-
+    is_lesson_room(Room),
+    is_elevator(Room).
+
+falso :-
+    is_lesson_room(Room),
+    is_hallway(Room).
+
+falso :-
+    is_lesson_room(Room),
+    is_stairs(Room).
+
+falso :-
     is_study_room(Room),
     is_office_room(Room).
 
-                % AGGIUNGI ANCHE LE ALTRE COPPIE DI TIPI DI STANZA
+falso :-
+    is_study_room(Room),
+    is_smoke_area(Room).
 
+falso :-
+    is_study_room(Room),
+    is_elevator(Room).
+
+falso :-
+    is_study_room(Room),
+    is_hallway(Room).
+
+falso :-
+    is_study_room(Room),
+    is_stairs(Room).
+
+falso :-
+    is_office_room(Room),
+    is_smoke_area(Room).
+
+falso :-
+    is_office_room(Room),
+    is_elevator(Room).
+
+falso :-
+    is_office_room(Room),
+    is_hallway(Room).
+
+falso :-
+    is_office_room(Room),
+    is_stairs(Room).
+
+falso :-
+    is_smoke_area(Room),
+    is_elevator(Room).
+
+falso :-
+    is_smoke_area(Room),
+    is_hallway(Room).
+
+falso :-
+    is_smoke_area(Room),
+    is_stairs(Room).
+
+falso :-
+    is_elevator(Room),
+    is_hallway(Room).
+
+falso :-
+    is_elevator(Room),
+    is_stairs(Room).
+
+falso :-
+    is_hallway(Room),
+    is_stairs(Room).
 
     % Regole per controllare che nessuno studente insegni e nessun professore segua dei corsi
 falso :-
@@ -429,8 +509,6 @@ falso :-
     is_unavailable(Place),
     \+is_place(Place),
     Place \= no_place.
-
-    % Regole per determinare se scale o ascensori sono collegati solo con elementi di stesse coordinate e piano che differisce di 1
 
 
     

@@ -30,9 +30,9 @@ class Knowledge_Base:
 
         # controllo che non sia una Knowledge Base insoddisfacibile (produce false)
         if(self.is_satisfiable()):
-            prompt("La KB caricata è consistente.")
+            prompt("La KB caricata è soddisfacibile.")
         else:
-            prompt("WARNING: La KB caricata è inconsistente!")
+            prompt("WARNING: La KB caricata è insoddisfacibile!")
 
 
     def add_clause(self, clause : str):
@@ -99,6 +99,7 @@ class Knowledge_Base:
         prompt("IMMISSIONE DELLE SITUAZIONI ANORMALI NELL'EDIFICIO:")
 
         while(True):
+            prompt(f"I possibili problemi sono: \nPROBLEM: problema generico.\nWET_FLOOR: pavimento bagnato.")
             command = prompt_request("Inserisci il nome di un posto e il relativo problema, nel formato < nome_posto problema > oppure /end per terminare l'operazione")
             
             # splitta il comando in più parti

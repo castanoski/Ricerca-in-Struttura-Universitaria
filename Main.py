@@ -183,19 +183,6 @@ class My_Solver:
             prompt(f"Costo = {mpp_solution.cost}")
         prompt(f"Eseguito in {time.time()-start_time} secondi.")
 
-        '''
-        # eseguo la ricerca con A*
-        prompt("Creazione del problema utilizzando A*:")
-        start_time = time.time()
-        AStar_Searcher = AStarSearcher(my_problem)
-        prompt(f"Creazione avvenuta in {time.time()-start_time} secondi.")
-        start_time = time.time()
-        AStar_solution = AStar_Searcher.search()
-        if(AStar_solution != None):
-            prompt(f"{AStar_solution}")
-            prompt(f"Costo = {AStar_solution.cost}")
-        prompt(f"Eseguito in {time.time()-start_time} secondi.")
-        '''
 
     def end_request(self) -> bool:
         query = prompt_request(f"Immetti il codice del luogo dove vuoi arrivare,\n   oppure /bath per il bagno più vicino,\n   oppure /study per l'aula studio più vicina, infine /back se vuoi cambiare stanza di partenza")
@@ -294,80 +281,5 @@ class My_Solver:
 knowledge_base = Knowledge_Base(FILES_LIST)
 
 # main loop per l'esecuzione delle query utente
-#My_Solver(knowledge_base)
+My_Solver(knowledge_base)
 
-
-
-#COLLO DI BOTTIGLIA
-# faccio una prova
-#print("Che corso, seguito da quale prof, consente allo student_1 di entrare in office_1_21_5?",knowledge_base.get_list_query_result(f"follows_class(student_1,Class),teaches_class(Teacher,Class),office_owner(Teacher, office_1_21_5)"))
-#print("teacher_1 quale metodo può usare per salire se si trova in stairs_3_33_11?",knowledge_base.get_list_query_result("can_go_up_with_from(teacher_1, Method, stairs_3_33_11)"))
-
-print(" Risolviamo il problema tra hallway_ingresso e hallway_2_29_5:\n")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_5"], "student_1")
-pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_2_29_5"], "student_1", use_heuristic=False)
-
-
-# MPP
-print("     A* con MPP:\n")
-searcher = SearcherMPP(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-# AStar
-print("     A* semplice:\n")
-searcher = AStarSearcher(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-# LCFS MPP:
-print("     LCFS con MPP:\n")
-searcher = SearcherMPP(pWithoutHeuristic)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-# LCFS
-print("     LCFS semplice:\n")
-searcher = AStarSearcher(pWithoutHeuristic)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-'''
-
-print(" Risolviamo il problema tra hallway_ingresso e hallway_1_1_17:")
-p = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_1_17"], "student_1")
-pWithoutHeuristic = My_Problem(knowledge_base, "hallway_ingresso", ["hallway_1_1_17"], "student_1", use_heuristic=False)
-
-# MPP
-print("     A* con MPP:\n")
-searcher = SearcherMPP(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-# AStar
-print("     A* semplice:\n")
-searcher = AStarSearcher(p)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-# LCFS MPP:
-print("     LCFS con MPP:\n")
-searcher = SearcherMPP(pWithoutHeuristic)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-# LCFS
-print("     LCFS semplice:\n")
-searcher = AStarSearcher(pWithoutHeuristic)
-start_time = time.time()
-solution = searcher.search()
-print(f"\n$ {solution}\n$ Cost = {solution.cost}\n$ Time = {time.time()-start_time} sec.")
-
-'''
